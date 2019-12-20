@@ -8,21 +8,41 @@
         <p slot="title">登录</p>
 
         <Form ref="login_form" :model="login_form">
-          <FormItem prop="user">
-            <Input type="text" v-model="login_form.username" placeholder="用户名">
-              <Icon type="ios-person-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-          <FormItem prop="password">
-            <Input type="password" v-model="login_form.password" placeholder="密码">
-              <Icon type="ios-lock-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-          <FormItem>
-            <Button size="large" long type="primary" @click="handleLogin()">登录</Button>
-            <!-- TODO 使用邮箱登录-->
-            <Button size="large" long type="text" disabled>使用邮箱登录</Button>
-          </FormItem>
+
+          <Row :gutter="16">
+            <Col span="12">
+              <FormItem prop="username">
+                <Input type="text" v-model="login_form.username" placeholder="用户名">
+                  <Icon type="ios-person-outline" slot="prepend"></Icon>
+                </Input>
+              </FormItem>
+              <FormItem prop="password">
+                <Input type="password" v-model="login_form.password" placeholder="密码">
+                  <Icon type="ios-lock-outline" slot="prepend"></Icon>
+                </Input>
+              </FormItem>
+              <FormItem>
+                <Row :gutter="16">
+                  <Col span="12">
+                    <Input type="verify_code" v-model="login_form.verify_code" placeholder="验证码">
+                      <Icon type="md-finger-print" slot="prepend"/>
+                    </Input>
+                  </Col>
+                  <Col span="12">
+                    <img prop="verify_code_img" ref="verify_code_img" width="100%" @click="getVerifyCodeImg"/>
+                  </Col>
+                </Row>
+              </FormItem>
+            </Col>
+            <Col span="12">
+              <FormItem :style="{paddingTop: '50px'}">
+                <Button size="large" long type="primary" @click="handleLogin()">登录</Button>
+                <!-- TODO 使用邮箱登录-->
+                <Button size="large" long type="text" disabled>使用邮箱登录</Button>
+              </FormItem>
+            </Col>
+          </Row>
+
         </Form>
       </Card>
     </div>
@@ -42,7 +62,8 @@
 
         login_form: {
           username: '',
-          password: ''
+          password: '',
+          verify_code: '',
         },
       }
     },
@@ -67,7 +88,8 @@
           is_username: true,
           username: this.login_form.username,
           pwd: this.login_form.password,
-          local_time: Date.parse(Date())/1000,
+          local_time: Date.parse(Date()) / 1000,
+          verify_code: this.login_form.verify_code,
         }).then(res => {
           if (res.data.status_code === 0) {
             this.$Loading.finish();
@@ -76,12 +98,13 @@
               content: '欢迎回来, ' + res.data.data.username,
               duration: 10
             });
+            this.$router.push('/');
           } else {
             this.$Loading.error();
             this.$Message.error({
               background: true,
               content: res.data.msg,
-              duration: 10
+              duration: 5
             });
           }
         }, err => {
@@ -89,9 +112,23 @@
           console.log(err)
         });
       },
+      /**
+       * 获取图片验证码
+       */
+      getVerifyCodeImg() {
+        this.$axios.get('api/util/verify_code_img/', {responseType: 'blob'})
+          .then(res => {
+            this.$refs.verify_code_img.src = window.URL.createObjectURL(res.data);
+            console.log()
+          })
+          .catch(err => {
+            console.log(err)
+          });
+      },
     },
     created() {
       this.init_flag = true;
+      this.getVerifyCodeImg();
     },
   }
 </script>

@@ -33,19 +33,19 @@
 
           <div class="layout-nav-right">
             <div v-if="is_login">
-              <Dropdown style="margin-left: 20px">
+              <Dropdown style="margin-left: 20px" @on-click="handleDropDown">
                 <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" size="large"/>
 
                 <DropdownMenu slot="list">
-                  <DropdownItem>
+                  <DropdownItem name="home">
                     <Icon type="md-person"/>
                     个人中心
                   </DropdownItem>
-                  <DropdownItem>
+                  <DropdownItem name="packet">
                     <Icon type="md-briefcase"/>
                     我的口袋
                   </DropdownItem>
-                  <DropdownItem divided>
+                  <DropdownItem divided name="logout">
                     <Icon type="md-log-out"/>
                     退出
                   </DropdownItem>
@@ -87,6 +87,9 @@
       };
     },
     methods: {
+      /**
+       * 检查是否已登录
+       */
       check_login() {
         this.$Loading.start();
         this.$axios.get('api/user/session/')
@@ -97,6 +100,38 @@
               background: true,
               content: res.data.msg
             });
+          })
+          .catch(err => {
+            this.$Loading.error();
+            this.$Message['error']({
+              background: true,
+              content: '电波无法到达'
+            });
+          });
+      },
+      /**
+       * 处理头像下拉菜单选择
+       */
+      handleDropDown(name) {
+        switch (name) {
+          case 'home':
+            console.log(name);
+            break;
+          case 'logout':
+            this.handleLogOut();
+            break;
+        }
+      },
+      /**
+       * 处理退出登录
+       */
+      handleLogOut() {
+        this.$Loading.start();
+        console.log(1);
+        this.$axios.delete('api/user/session/')
+          .then(res => {
+            this.$Loading.finish();
+            this.$router.go(0);
           })
           .catch(err => {
             this.$Loading.error();
