@@ -2,32 +2,6 @@
 
   <div class="layout">
 
-    <div v-if="init_flag" class="layout-main animated zoomIn zoomOut">
-      <Logo style="width: 500px; padding-left: 50px"></Logo>
-
-      <Card>
-        <p slot="title">注册</p>
-
-        <Form ref="formInline" :model="formInline" :rules="ruleInline">
-          <FormItem prop="user">
-            <Input type="text" v-model="formInline.username" placeholder="用户名">
-              <Icon type="ios-person-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-          <FormItem prop="password">
-            <Input type="password" v-model="formInline.password" placeholder="密码">
-              <Icon type="ios-lock-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-          <FormItem>
-            <Radio>我已阅读并同意用户协议</Radio>
-
-            <Button size="large" long type="primary" @click="handleSubmit('formInline')">注册</Button>
-          </FormItem>
-        </Form>
-      </Card>
-    </div>
-
   </div>
 </template>
 

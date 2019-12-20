@@ -24,7 +24,7 @@
               <FormItem>
                 <Row :gutter="16">
                   <Col span="12">
-                    <Input type="verify_code" v-model="login_form.verify_code" placeholder="验证码">
+                    <Input v-model="login_form.verify_code" placeholder="验证码">
                       <Icon type="md-finger-print" slot="prepend"/>
                     </Input>
                   </Col>
@@ -59,6 +59,7 @@
     data() {
       return {
         init_flag: false,
+        is_login: false,
 
         login_form: {
           username: '',
@@ -116,17 +117,45 @@
        * 获取图片验证码
        */
       getVerifyCodeImg() {
+        this.$Loading.start();
         this.$axios.get('api/util/verify_code_img/', {responseType: 'blob'})
           .then(res => {
+            this.$Loading.finish();
             this.$refs.verify_code_img.src = window.URL.createObjectURL(res.data);
-            console.log()
           })
           .catch(err => {
+            this.$Loading.error();
             console.log(err)
+          });
+      },
+      /**
+       * 检查是否已登录
+       */
+      check_login() {
+        this.$Loading.start();
+        this.$axios.get('api/user/session/')
+          .then(res => {
+            this.$Loading.finish();
+            this.is_login = res.data.data.is_login;
+            this.$Message['info']({
+              background: true,
+              content: res.data.msg
+            });
+            if (this.is_login === true) {
+              this.$router.push('/')
+            }
+          })
+          .catch(err => {
+            this.$Loading.error();
+            this.$Message['error']({
+              background: true,
+              content: '电波无法到达'
+            });
           });
       },
     },
     created() {
+      this.check_login();
       this.init_flag = true;
       this.getVerifyCodeImg();
     },
