@@ -3,29 +3,29 @@
   <div class="layout">
     <Layout>
       <Header :style="{position: 'fixed', width: '100%'}">
-        <Menu mode="horizontal" theme="dark">
+        <Menu mode="horizontal" theme="dark" active-name="post">
           <div class="layout-logo">
             <span>BytesDooIT</span>
           </div>
 
           <div class="layout-nav">
-            <MenuItem name="post">
+            <MenuItem name="post" to="Post">
               <Icon type="ios-heart"/>
               好文
             </MenuItem>
-            <MenuItem name="video">
+            <MenuItem name="video" to="Video">
               <Icon type="logo-youtube"/>
               好片
             </MenuItem>
-            <MenuItem name="live">
+            <MenuItem name="live" to="Live">
               <Icon type="ios-mic"/>
               直播
             </MenuItem>
-            <MenuItem name="recruitment">
+            <MenuItem name="recruitment" to="Recruitment">
               <Icon type="ios-megaphone"/>
               招聘
             </MenuItem>
-            <MenuItem name="interview">
+            <MenuItem name="interview" to="Interview">
               <Icon type="md-people"/>
               面试
             </MenuItem>
@@ -64,8 +64,10 @@
         </Menu>
       </Header>
 
-      <Content :style="{margin: '88px 20px 0', background: '#fff', minHeight: '500px'}">
-        <Logo style="margin: 0 auto"></Logo>
+      <Content :style="{margin: '88px 20px 0', minHeight: '1000px'}">
+        <transition enter-active-class="fadeIn" mode="out-in" translate="yes" leave-active-class="fadeOut">
+          <router-view v-if="init_flag" class="animated"></router-view>
+        </transition>
       </Content>
 
       <Footer class="layout-footer-center">2019 &copy; BytesDooIT</Footer>
@@ -85,6 +87,7 @@
     },
     data() {
       return {
+        init_flag: false,
         is_login: false,
         user_data: {}
       };
@@ -100,10 +103,6 @@
             this.$Loading.finish();
             this.is_login = res.data.data.is_login;
             this.user_data = res.data.data;
-            this.$Message['info']({
-              background: true,
-              content: res.data.msg
-            });
           })
           .catch(err => {
             console.log(err);
@@ -148,20 +147,13 @@
       },
     },
     created() {
+      this.init_flag = true;
       this.check_login();
     },
   }
 </script>
 
 <style scoped>
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .3s;
-  }
-
-  .fade-enter, .fade-leave-to {
-    opacity: 0;
-  }
-
   .layout {
     border: 1px solid #d7dde4;
     background: #f5f7f9;

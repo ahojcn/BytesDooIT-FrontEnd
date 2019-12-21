@@ -1,6 +1,6 @@
 <template>
   <transition>
-    <img v-if="init_flag" class="animated zoomInDown" src="@/assets/logo.png" alt="logo">
+    <img v-if="init_flag" class="animated zoomInDown" src="@/assets/logo.png" @click="handleLogoClick" alt="logo">
 <!--    <span v-if="init_flag" class="animated flip" style="color: #fff; font-size: 30px">BytesDooIT</span>-->
   </transition>
 </template>
@@ -11,6 +11,11 @@
     data() {
       return {
         init_flag: false,
+      }
+    },
+    methods: {
+      handleLogoClick() {
+        this.$router.push('/');
       }
     },
     created() {

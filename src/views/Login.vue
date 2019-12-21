@@ -115,7 +115,7 @@
           if (valid) {
             this.login();
           } else {
-            this.$Message.error('登录失败');
+            this.$Message.error('请完善信息');
           }
         })
       },
@@ -176,10 +176,6 @@
           .then(res => {
             this.$Loading.finish();
             this.is_login = res.data.data.is_login;
-            this.$Message['info']({
-              background: true,
-              content: res.data.msg
-            });
             if (this.is_login === true) {
               this.$router.push('/')
             }

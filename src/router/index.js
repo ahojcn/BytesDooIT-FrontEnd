@@ -8,6 +8,14 @@ import Login from '@/views/Login';
 // 注册
 import Register from '@/views/Register'
 
+// post、live、video、interview、recruitment
+import Interview from '@/views/Interview'
+import Live from '@/views/Live'
+import Post from '@/views/Post'
+import Recruitment from '@/views/Recruitment'
+import Video from '@/views/Video'
+
+
 Vue.use(Router);
 
 export default new Router({
@@ -15,7 +23,35 @@ export default new Router({
     {
       path: '/',
       name: 'Index',
-      component: Index
+      component: Index,
+      redirect: '/Post',
+      children: [
+        {
+          path: '/Post',
+          name: 'Post',
+          component: Post
+        },
+        {
+          path: '/Video',
+          name: 'Video',
+          component: Video
+        },
+        {
+          path: '/Live',
+          name: 'Live',
+          component: Live
+        },
+        {
+          path: '/Recruitment',
+          name: 'Recruitment',
+          component: Recruitment
+        },
+        {
+          path: '/Interview',
+          name: 'Interview',
+          component: Interview
+        },
+      ],
     },
     {
       path: '/Login',
