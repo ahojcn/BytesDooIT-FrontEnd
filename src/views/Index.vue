@@ -2,7 +2,7 @@
 
   <div class="layout">
     <Layout>
-      <Header :style="{position: 'fixed', width: '100%'}">
+      <Header :style="{position: 'fixed', width: '100%', zIndex: '99999', opacity: '0.9'}">
         <Menu mode="horizontal" theme="dark" active-name="post">
           <div class="layout-logo">
             <span>BytesDooIT</span>
@@ -34,7 +34,7 @@
           <div class="layout-nav-right">
             <div v-if="is_login">
               <Dropdown style="margin-left: 20px" @on-click="handleDropDown">
-                <Avatar style="color: #f56a00;background-color: #fde3cf" ref="avatar" size="large">
+                <Avatar class="user-avatar" ref="avatar" size="large">
                   {{user_data.username}}
                 </Avatar>
 
@@ -102,7 +102,12 @@
           .then(res => {
             this.$Loading.finish();
             this.is_login = res.data.data.is_login;
-            this.user_data = res.data.data;
+            if (this.is_login === true) {
+              this.user_data = res.data.data;
+              if (this.user_data.is_active === false) {
+                this.$Message.error({background: true, content: '请查收邮件并激活账号'})
+              }
+            }
           })
           .catch(err => {
             console.log(err);
@@ -119,7 +124,7 @@
       handleDropDown(name) {
         switch (name) {
           case 'home':
-            console.log(name);
+            this.$router.push('/Home');
             break;
           case 'logout':
             this.handleLogOut();
@@ -154,8 +159,12 @@
 </script>
 
 <style scoped>
+  html, body {
+    width: 100%;
+    height: 100%;
+  }
+
   .layout {
-    border: 1px solid #d7dde4;
     background: #f5f7f9;
     position: relative;
     border-radius: 4px;
@@ -190,5 +199,10 @@
 
   .layout-footer-center {
     text-align: center;
+  }
+
+  .user-avatar {
+    color: #f56a00;
+    background-color: #fde3cf
   }
 </style>

@@ -7,6 +7,8 @@ import Index from '@/views/Index';
 import Login from '@/views/Login';
 // 注册
 import Register from '@/views/Register'
+// home
+import Home from '@/views/Home'
 
 // post、live、video、interview、recruitment
 import Interview from '@/views/Interview'
@@ -51,6 +53,11 @@ export default new Router({
           name: 'Interview',
           component: Interview
         },
+        {
+          path: '/Home',
+          name: 'Home',
+          component: Home
+        }
       ],
     },
     {

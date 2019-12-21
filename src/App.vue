@@ -17,6 +17,11 @@
         .catch(err => {
           this.$Message.error('未知错误');
         });
+
+      this.$Message.config({
+        top: 100,
+        duration: 5,
+      });
     }
   }
 </script>

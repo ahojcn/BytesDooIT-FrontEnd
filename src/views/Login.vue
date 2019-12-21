@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
 
-    <div v-if="init_flag" class="layout-main animated zoomIn">
+    <div v-if="init_flag" class="layout-main animated fadeIn">
       <Logo style="width: 500px; padding-left: 50px"></Logo>
 
       <Card>
