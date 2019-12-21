@@ -7,7 +7,7 @@
       <Card>
         <p slot="title">登录</p>
 
-        <Form ref="login_form" :model="login_form">
+        <Form ref="login_form" :model="login_form" :rules="rule_login">
 
           <Row :gutter="16">
             <Col span="12">
@@ -21,7 +21,7 @@
                   <Icon type="ios-lock-outline" slot="prepend"></Icon>
                 </Input>
               </FormItem>
-              <FormItem>
+              <FormItem prop="verify_code">
                 <Row :gutter="16">
                   <Col span="12">
                     <Input v-model="login_form.verify_code" placeholder="验证码">
@@ -36,7 +36,7 @@
             </Col>
             <Col span="12">
               <FormItem>
-                <Button size="large" long type="primary" @click="handleLogin()">
+                <Button size="large" long type="primary" @click="handleLogin">
                   <Icon type="md-checkmark"></Icon>
                   登录
                 </Button>
@@ -61,6 +61,29 @@
     name: "Login",
     components: {Logo},
     data() {
+      const validateUsername = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入用户名'));
+        } else if (value.length < 4) {
+          callback(new Error('用户名太短'));
+        } else {
+          callback();
+        }
+      };
+      const validatePassword = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'));
+        }
+        callback();
+      };
+      const validateCode = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入验证码'));
+        } else {
+          callback();
+        }
+      };
+
       return {
         init_flag: false,
         is_login: false,
@@ -70,25 +93,37 @@
           password: '',
           verify_code: '',
         },
+        rule_login: {
+          username: [
+            {validator: validateUsername, trigger: 'blur'}
+          ],
+          password: [
+            {validator: validatePassword, trigger: 'blur'}
+          ],
+          verify_code: [
+            {validator: validateCode, trigger: 'blur'}
+          ],
+        },
       }
     },
     methods: {
       /**
-       * 登录处理
+       * 登录按钮点击事件
        */
       handleLogin() {
+        this.$refs.login_form.validate((valid) => {
+          if (valid) {
+            this.login();
+          } else {
+            this.$Message.error('登录失败');
+          }
+        })
+      },
+      /**
+       * 登录
+       */
+      login() {
         this.$Loading.start();
-
-        if (this.login_form.username === '' || this.login_form.password === '' || this.login_form.password.length < 6) {
-          this.$Message.error({
-            background: true,
-            content: '请输入正确的用户名和密码',
-            duration: 5
-          });
-          this.$Loading.error();
-          return
-        }
-
         this.$axios.post('api/user/session/', {
           is_username: true,
           username: this.login_form.username,
