@@ -34,7 +34,9 @@
           <div class="layout-nav-right">
             <div v-if="is_login">
               <Dropdown style="margin-left: 20px" @on-click="handleDropDown">
-                <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" size="large"/>
+                <Avatar style="color: #f56a00;background-color: #fde3cf" ref="avatar" size="large">
+                  {{user_data.username}}
+                </Avatar>
 
                 <DropdownMenu slot="list">
                   <DropdownItem name="home">
@@ -84,6 +86,7 @@
     data() {
       return {
         is_login: false,
+        user_data: {}
       };
     },
     methods: {
@@ -96,12 +99,14 @@
           .then(res => {
             this.$Loading.finish();
             this.is_login = res.data.data.is_login;
+            this.user_data = res.data.data;
             this.$Message['info']({
               background: true,
               content: res.data.msg
             });
           })
           .catch(err => {
+            console.log(err);
             this.$Loading.error();
             this.$Message['error']({
               background: true,

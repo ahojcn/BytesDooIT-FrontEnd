@@ -35,8 +35,12 @@
               </FormItem>
             </Col>
             <Col span="12">
-              <FormItem :style="{paddingTop: '50px'}">
-                <Button size="large" long type="primary" @click="handleLogin()">登录</Button>
+              <FormItem>
+                <Button size="large" long type="primary" @click="handleLogin()">
+                  <Icon type="md-checkmark"></Icon>
+                  登录
+                </Button>
+
                 <!-- TODO 使用邮箱登录-->
                 <Button size="large" long type="text" disabled>使用邮箱登录</Button>
               </FormItem>
@@ -181,7 +185,7 @@
 
   .layout-main {
     margin: 0 auto;
-    width: 30%;
+    width: 500px;
     margin-top: 10%;
     /*opacity: 90%;*/
   }
