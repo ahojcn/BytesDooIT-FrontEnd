@@ -17,6 +17,9 @@ import Post from '@/views/Post'
 import Recruitment from '@/views/Recruitment'
 import Video from '@/views/Video'
 
+// 发布文章
+import NewPost from '@/views/NewPost'
+
 
 Vue.use(Router);
 
@@ -57,6 +60,11 @@ export default new Router({
           path: '/Home',
           name: 'Home',
           component: Home
+        },
+        {
+          path: '/NewPost',
+          name: 'NewPost',
+          component: NewPost
         }
       ],
     },

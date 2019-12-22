@@ -12,20 +12,25 @@
 
           <Input size="large" search placeholder="搜索"></Input>
 
-          <CellGroup>
+          <CellGroup @on-click="handleOnClickCell">
 
             <div v-for="(p, index) in posts">
-              <Cell>
+              <Cell :name="index">
                 <div>
                   {{p.title}}
                 </div>
                 <div slot="label">
-                  {{p.content}}
+                  {{p.content.substring(0, 100)}}
                 </div>
                 <div slot="extra">
-                  <Avatar class="user-avatar" ref="avatar">
-                    {{p.username}}
-                  </Avatar>
+                  <Tag color="pink">
+                    <Icon type="md-thumbs-up"></Icon>
+                    {{p.like_count}}
+                  </Tag>
+                  <Tag type="border" color="warning">
+                    <Icon type="logo-snapchat" color="orange"></Icon>
+                    {{p.food_count}}
+                  </Tag>
                 </div>
               </Cell>
             </div>
@@ -45,20 +50,32 @@
             <Avatar class="user-avatar" ref="avatar">
               {{cur_post.username}}
             </Avatar>
-            <b>{{cur_post.title}}</b>
+            <b>{{cur_post.username}}</b>
+          </div>
+
+          <div slot="extra">
+            发布：{{new Date(cur_post.create_datetime).toLocaleDateString()}}
+            |
+            更新：{{new Date(cur_post.update_datetime).toLocaleDateString()}}
           </div>
 
           <div>
+            <div>
+              <h1>{{cur_post.title}}</h1>
+              <!-- TODO 显示文章 tags categories -->
+            </div>
+
             <mavon-editor
               class="md"
               :value="cur_post.content"
-              :subfield = "false"
-              :defaultOpen = "'preview'"
-              :toolbarsFlag = "false"
+              :subfield="false"
+              :defaultOpen="'preview'"
+              :toolbarsFlag="false"
               :editable="false"
               :scrollStyle="true"
-              :ishljs = "true"
+              :ishljs="true"
               :navigation="true"
+              :readmodel="true"
             ></mavon-editor>
           </div>
         </Card>
@@ -135,6 +152,12 @@
         }).catch(err => {
           this.$Loading.error();
         });
+      },
+      /**
+       * 切换点击事件
+       */
+      handleOnClickCell(i) {
+        this.cur_post = this.posts[i];
       },
     },
     mounted() {

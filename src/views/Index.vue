@@ -44,26 +44,26 @@
                 </Avatar>
 
                 <DropdownMenu slot="list">
-                  <DropdownItem>
-                    <Icon type="ios-add-circle" color="orange"/>
+                  <DropdownItem name="new_post">
+                    <Icon type="ios-add-circle" color="orange"></Icon>
                     发布文章
                   </DropdownItem>
                   <DropdownItem>
-                    <Icon type="ios-cloud-upload" color="#00CC99"/>
+                    <Icon type="ios-cloud-upload" color="#00CC99"></Icon>
                     视频投稿
                   </DropdownItem>
 
                   <DropdownItem divided name="home">
-                    <Icon type="md-person"/>
+                    <Icon type="md-person"></Icon>
                     个人中心
                   </DropdownItem>
                   <DropdownItem name="packet">
-                    <Icon type="md-briefcase"/>
+                    <Icon type="md-briefcase"></Icon>
                     我的口袋
                   </DropdownItem>
 
                   <DropdownItem divided name="logout">
-                    <Icon type="md-log-out"/>
+                    <Icon type="md-log-out"></Icon>
                     退出
                   </DropdownItem>
                 </DropdownMenu>
@@ -157,6 +157,16 @@
             break;
           case 'logout':
             this.handleLogOut();
+            break;
+          case 'new_post':
+            if (this.is_login === true && this.user_data.is_active === true) {
+              this.$router.push('/NewPost');
+            } else {
+              this.$Message.error({
+                background: true,
+                content: '账号未激活'
+              })
+            }
             break;
         }
       },
