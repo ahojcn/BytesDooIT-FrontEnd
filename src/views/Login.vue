@@ -2,7 +2,7 @@
   <div class="layout">
 
     <div v-if="init_flag" class="layout-main animated fadeIn">
-      <Logo style="width: 500px; padding-left: 50px"></Logo>
+      <Logo style="width: 500px;"></Logo>
 
       <Card>
         <p slot="title">登录</p>

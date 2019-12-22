@@ -6,7 +6,16 @@
         <div slot="title">
           <Avatar size="large" class="user-avatar">{{user_data.username}}</Avatar>
           <span><b>{{user_data.username}}</b></span>
-          <Button style="float: right" v-if="!user_data.is_active" type="error" @click="handleActive">激活账号</Button>
+
+          <Poptip style="float: right" v-if="!user_data.is_active" trigger="hover" placement="right">
+            <div slot="content">
+              <Steps :current="1" direction="vertical" status="error">
+                <Step title="注册"></Step>
+                <Step title="验证邮箱"></Step>
+              </Steps>
+            </div>
+            <Button type="error" @click="handleActive">激活账号</Button>
+          </Poptip>
         </div>
 
         邮箱：{{user_data.email}}<br>
@@ -81,6 +90,7 @@
         this.$Loading.start();
         this.$axios.post('api/user/active/')
           .then(res => {
+            this.$Loading.finish();
             if (res.data.status_code === 0) {
               this.$Message.success({
                 background: true,
@@ -94,6 +104,7 @@
             }
           })
           .catch(err => {
+            this.$Loading.error();
             this.$Loading.error();
             this.$Message['error']({
               background: true,

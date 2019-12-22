@@ -15,9 +15,14 @@ import VueAxios from 'vue-axios';
 // animate
 import animated from 'animate.css'
 
+// mavonEditor
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+
 Vue.use(ViewUI);
 Vue.use(VueAxios, axios);
 Vue.use(animated);
+Vue.use(mavonEditor);
 
 Vue.prototype.$axios = axios;
 axios.defaults.baseURL = 'http://127.0.0.1:8000/';

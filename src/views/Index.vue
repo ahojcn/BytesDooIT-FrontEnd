@@ -1,11 +1,16 @@
 <template>
 
   <div class="layout">
+    <!--  返回顶部按钮  -->
+    <BackTop :height="100" :bottom="200" @on-click="handleBack2Top">
+      <div class="back2top">返回顶端</div>
+    </BackTop>
+
     <Layout>
       <Header :style="{position: 'fixed', width: '100%', zIndex: '99999', opacity: '0.9'}">
         <Menu mode="horizontal" theme="dark" active-name="post">
           <div class="layout-logo">
-            <span>BytesDooIT</span>
+            <span style="color: orange" @click="handleLogoClick">BytesDooIT</span>
           </div>
 
           <div class="layout-nav">
@@ -39,7 +44,16 @@
                 </Avatar>
 
                 <DropdownMenu slot="list">
-                  <DropdownItem name="home">
+                  <DropdownItem>
+                    <Icon type="ios-add-circle" color="orange"/>
+                    发布文章
+                  </DropdownItem>
+                  <DropdownItem>
+                    <Icon type="ios-cloud-upload" color="#00CC99"/>
+                    视频投稿
+                  </DropdownItem>
+
+                  <DropdownItem divided name="home">
                     <Icon type="md-person"/>
                     个人中心
                   </DropdownItem>
@@ -47,12 +61,14 @@
                     <Icon type="md-briefcase"/>
                     我的口袋
                   </DropdownItem>
+
                   <DropdownItem divided name="logout">
                     <Icon type="md-log-out"/>
                     退出
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
+
             </div>
 
             <div v-if="!is_login">
@@ -93,6 +109,19 @@
       };
     },
     methods: {
+      handleLogoClick() {
+        this.$router.go(0);
+      },
+
+      /**
+       * 点击返回顶部按钮
+       */
+      handleBack2Top() {
+        this.$Message.success({
+          background: true,
+          content: '欢迎回来~'
+        })
+      },
       /**
        * 检查是否已登录
        */
@@ -193,7 +222,6 @@
   .layout-nav-right {
     background: #515a6e;
     border-radius: 3px;
-    float: right;
     top: 8px;
     left: 20px;
   }
@@ -204,6 +232,14 @@
 
   .user-avatar {
     color: #f56a00;
-    background-color: #fde3cf
+    background-color: #fde3cf;
+  }
+
+  .back2top {
+    padding: 10px;
+    background: rgba(0, 153, 229, .7);
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
   }
 </style>

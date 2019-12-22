@@ -31,7 +31,7 @@ export default new Router({
         {
           path: '/Post',
           name: 'Post',
-          component: Post
+          component: Post,
         },
         {
           path: '/Video',

@@ -1,32 +1,69 @@
 <template>
   <div>
+    <!--  loading  -->
+    <Spin size="large" fix v-if="loading"></Spin>
 
-    <BackTop :height="100" :bottom="200" @on-click="handleBack2Top">
-      <div class="back2top">返回顶端</div>
-    </BackTop>
-
-    <div v-for="p in posts">
-      <Col span="8" :gutter="16">
-        <Card class="post-card" :bordered="false">
-          <p slot="title">{{p.title}}</p>
-
-          <p>正文：{{p.content}}</p>
-
+    <Row>
+      <Col span="5">
+        <Card title="好文" icon="ios-heart" :padding="0" :bordered="false" style="width: 300px;">
           <div slot="extra">
-            <Avatar class="user-avatar" ref="avatar">
-              {{p.username}}
-            </Avatar>
+            <Tag color="warning">{{total_post}}</Tag>
+          </div>
+
+          <Input size="large" search placeholder="搜索"></Input>
+
+          <CellGroup>
+
+            <div v-for="(p, index) in posts">
+              <Cell>
+                <div>
+                  {{p.title}}
+                </div>
+                <div slot="label">
+                  {{p.content}}
+                </div>
+                <div slot="extra">
+                  <Avatar class="user-avatar" ref="avatar">
+                    {{p.username}}
+                  </Avatar>
+                </div>
+              </Cell>
+            </div>
+          </CellGroup>
+
+          <div style="text-align: center; padding-bottom: 20px; margin-top: 20px">
+            <div style="display: inline;">
+              <Page size="small" :total="total_post" :page-size="page_size" show-elevator
+                    @on-page-size-change="handlePageSizeChange" @on-change="handlePageIndexChange"></Page>
+            </div>
           </div>
         </Card>
       </Col>
-    </div>
+      <Col span="19">
+        <Card shadow>
+          <div slot="title">
+            <Avatar class="user-avatar" ref="avatar">
+              {{cur_post.username}}
+            </Avatar>
+            <b>{{cur_post.title}}</b>
+          </div>
 
-    <div style="text-align: center;">
-      <div style="display: inline;">
-        <Page :total="total_post" :page-size="page_size" show-sizer show-total show-elevator
-              @on-page-size-change="handlePageSizeChange" @on-change="handlePageIndexChange"></Page>
-      </div>
-    </div>
+          <div>
+            <mavon-editor
+              class="md"
+              :value="cur_post.content"
+              :subfield = "false"
+              :defaultOpen = "'preview'"
+              :toolbarsFlag = "false"
+              :editable="false"
+              :scrollStyle="true"
+              :ishljs = "true"
+              :navigation="true"
+            ></mavon-editor>
+          </div>
+        </Card>
+      </Col>
+    </Row>
 
   </div>
 </template>
@@ -36,24 +73,18 @@
     name: "Post",
     data() {
       return {
+        loading: true,
+
         page_index: 1,
         page_size: 9,
         total_page: 1,
         total_post: 0,
 
         posts: [],
+        cur_post: {},  // 当前展示的 post
       }
     },
     methods: {
-      /**
-       * 点击返回顶部按钮
-       */
-      handleBack2Top() {
-        this.$Message.success({
-          background: true,
-          content: '欢迎回来~'
-        })
-      },
       /**
        * on-page-size-change
        * 当 page size 改变
@@ -88,12 +119,23 @@
             this.total_page = res.data.data.total_page;
             this.total_post = res.data.data.total_post;
           }
-          console.log(res)
+
+          let post_id = this.$route.query.post_id;
+          this.cur_post = this.posts[0];  // 默认显示第一篇
+          if (post_id !== undefined || post_id !== null) {  // 有参数，查找文章 list 中是否有这篇文章
+            for (let i = 0; i < this.posts.length; i++) {
+              if (this.posts[i].post_id === post_id) {
+                this.cur_post = this.posts;
+                break;
+              }
+            }
+          }
+
+          this.loading = false;
         }).catch(err => {
           this.$Loading.error();
-          // console.log(err)
         });
-      }
+      },
     },
     mounted() {
       this.getPosts();
@@ -102,22 +144,9 @@
 </script>
 
 <style scoped>
-
-  .post-card {
-    margin: 20px;
-  }
-
   .user-avatar {
     color: #f56a00;
     background-color: #fde3cf
-  }
-
-  .back2top{
-    padding: 10px;
-    background: rgba(0, 153, 229, .7);
-    color: #fff;
-    text-align: center;
-    border-radius: 2px;
   }
 
 </style>

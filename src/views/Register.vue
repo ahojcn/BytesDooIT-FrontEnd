@@ -52,6 +52,11 @@
                   注册
                 </Button>
               </FormItem>
+
+              <Steps :current="0" direction="vertical">
+                <Step title="注册"></Step>
+                <Step title="验证邮箱"></Step>
+              </Steps>
             </Col>
           </Row>
 
