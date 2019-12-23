@@ -20,7 +20,7 @@
           <!--  todo  -->
           <td>文章分类：</td>
           <td>
-            <Tag v-for="item in category" :key="item" :name="item" closable @on-close="handleCloseTag">{{item}}</Tag>
+            <Tag v-for="item in category" :key="item" :name="item" closable @on-close="handleCloseCategory">{{item}}</Tag>
             <Button icon="ios-add" type="dashed" size="small" @click="handleAddCategory">添加分类</Button>
           </td>
         </tr>
@@ -127,7 +127,13 @@
        */
       handleCategoryCheckChange(item) {
         this.category.push(item[0]);
-        console.log(this.category)
+        // console.log(this.category)
+      },
+      /**
+       * 删除分类
+       */
+      handleCloseCategory(event, name) {
+        this.category.pop();
       },
       /**
        * 添加标签
@@ -194,14 +200,19 @@
           title: this.title,
           content: this.content,
           is_draft: false,
+          tags: this.tags,
+          category: this.category
+
         }).then(res => {
           this.loading = false;
           this.$Loading.finish();
+          console.log(res);
           if (res.data.status_code === -1) {
             this.$Message.error({background: true, content: '你还什么都没写哟'});
           } else {
             this.$Message.success({background: true, content: res.data.msg});
           }
+
         }).catch(err => {
           this.loading = false;
           this.$Loading.error();
@@ -209,7 +220,7 @@
             background: true,
             content: '电波无法到达'
           });
-        })
+        });
       },
       /**
        * 获取用户的 post 分类列表
