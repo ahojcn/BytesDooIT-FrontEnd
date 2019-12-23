@@ -15,23 +15,23 @@
 
           <div class="layout-nav">
             <MenuItem name="post" to="Post">
-              <Icon type="ios-heart"/>
+              <Icon type="ios-heart" color="pink"></Icon>
               好文
             </MenuItem>
             <MenuItem name="video" to="Video">
-              <Icon type="logo-youtube"/>
+              <Icon type="logo-youtube" color="orange"></Icon>
               好片
             </MenuItem>
             <MenuItem name="live" to="Live">
-              <Icon type="ios-mic"/>
+              <Icon type="ios-mic" color="#fff"></Icon>
               直播
             </MenuItem>
             <MenuItem name="recruitment" to="Recruitment">
-              <Icon type="ios-megaphone"/>
+              <Icon type="ios-megaphone" color="#00FF99"></Icon>
               招聘
             </MenuItem>
             <MenuItem name="interview" to="Interview">
-              <Icon type="md-people"/>
+              <Icon type="md-people" color="#00CCFF"></Icon>
               面试
             </MenuItem>
           </div>
@@ -139,7 +139,7 @@
             }
           })
           .catch(err => {
-            console.log(err);
+            // console.log(err);
             this.$Loading.error();
             this.$Message['error']({
               background: true,

@@ -5,22 +5,27 @@
 
     <Row>
       <Col span="5">
-        <Card title="好文" icon="ios-heart" :padding="0" :bordered="false" style="width: 300px;">
+        <Card :padding="0" :bordered="false" style="width: 300px;">
+          <div slot="title">
+            <Icon type="ios-heart" color="pink"></Icon>
+            好文
+          </div>
+
           <div slot="extra">
             <Tag color="warning">{{total_post}}</Tag>
           </div>
 
-          <Input size="large" search placeholder="搜索"></Input>
+          <Input size="large" v-model="search_key" autofocus search placeholder="根据标题搜索"></Input>
 
-          <CellGroup @on-click="handleOnClickCell">
-
-            <div v-for="(p, index) in posts">
-              <Cell :name="index">
+          <CellGroup ref="cellgroup" @on-click="handleOnClickCell" style="min-height: 500px">
+            <div v-for="(p, index) in searchPost(search_key)">
+              <!-- :ref="'cell' + index" -->
+              <Cell :name="index" :selected="select_index === index">
                 <div>
                   {{p.title}}
                 </div>
                 <div slot="label">
-                  {{p.content.substring(0, 100)}}
+                  {{p.content.substring(0, 30)}}
                 </div>
                 <div slot="extra">
                   <Tag color="pink">
@@ -55,7 +60,7 @@
 
           <div slot="extra">
             发布：{{new Date(cur_post.create_datetime).toLocaleDateString()}}
-            |
+            <br>
             更新：{{new Date(cur_post.update_datetime).toLocaleDateString()}}
           </div>
 
@@ -67,6 +72,7 @@
 
             <mavon-editor
               class="md"
+              style="min-height: 500px; z-index: 90"
               :value="cur_post.content"
               :subfield="false"
               :defaultOpen="'preview'"
@@ -92,16 +98,37 @@
       return {
         loading: true,
 
-        page_index: 1,
-        page_size: 9,
-        total_page: 1,
-        total_post: 0,
+        page_index: 1,  // 当前页
+        page_size: 9,  // 每页多少个 post
+        total_page: 1,  // 总共分多少页
+        total_post: 0,  // 总共多少篇 post
 
-        posts: [],
+        select_index: 0,  // 当前选中的 cell 的 index
+
+        posts: [],  // post 列表
         cur_post: {},  // 当前展示的 post
+
+        search_key: '',  // 搜索关键词
+        posts_backup: [],  // 开始搜索时，备份之前的 posts，当搜索结束后重新给值
       }
     },
     methods: {
+      /**
+       * search
+       */
+      searchPost(keywords) {
+        let ret = [];
+        if (keywords === '') {
+          return this.posts;
+        } else {
+          this.posts.forEach(item => {
+            if (item.title.indexOf(keywords) !== -1) {
+              ret.push(item);
+            }
+          });
+        }
+        return ret;
+      },
       /**
        * on-page-size-change
        * 当 page size 改变
@@ -158,11 +185,13 @@
        */
       handleOnClickCell(i) {
         this.cur_post = this.posts[i];
+        this.select_index = i;
       },
     },
+
     mounted() {
       this.getPosts();
-    }
+    },
   }
 </script>
 
