@@ -8,7 +8,6 @@
             placement="right"
             width="95"
             :closable="false"
-            :scrollable="true"
             v-model="show_one_post">
       <Card shadow>
         <div slot="title">
@@ -24,7 +23,7 @@
         </div>
 
         <div slot="extra">
-          <Button type="info" size="large" @click="jumpToIndex">返回首页</Button>
+          <Button type="warning" size="large" @click="jumpToIndex">返回首页</Button>
         </div>
 
         <div>
@@ -43,6 +42,8 @@
             </div>
           </div>
 
+          <Divider orientation="left">正文</Divider>
+
           <mavon-editor
             class="md"
             style="min-height: 500px; z-index: 90"
@@ -56,6 +57,8 @@
             :navigation="true"
             :readmodel="true"
           ></mavon-editor>
+
+          <Divider orientation="left">EOF</Divider>
         </div>
       </Card>
     </Drawer>
@@ -140,6 +143,8 @@
               </div>
             </div>
 
+            <Divider orientation="left">正文</Divider>
+
             <mavon-editor
               class="md"
               style="min-height: 500px; z-index: 90"
@@ -153,6 +158,8 @@
               :navigation="true"
               :readmodel="true"
             ></mavon-editor>
+
+            <Divider orientation="left">正文</Divider>
           </div>
         </Card>
       </Col>
