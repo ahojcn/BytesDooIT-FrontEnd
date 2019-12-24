@@ -24,9 +24,12 @@ Vue.use(VueAxios, axios);
 Vue.use(animated);
 Vue.use(mavonEditor);
 
-Vue.prototype.$axios = axios;
 axios.defaults.baseURL = 'http://127.0.0.1:8000/';
 axios.defaults.withCredentials = true;
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+
+Vue.prototype.$axios = axios;
 
 Vue.config.productionTip = false;
 

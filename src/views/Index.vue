@@ -7,10 +7,11 @@
     </BackTop>
 
     <Layout>
-      <Header :style="{position: 'fixed', width: '100%', zIndex: '99999', opacity: '0.9'}">
-        <Menu mode="horizontal" theme="dark" active-name="post">
+      <Header class="layout-header-bar">
+        <Menu mode="horizontal" active-name="post" @on-select="handleDropDown">
           <div class="layout-logo">
-            <span style="color: orange" @click="handleLogoClick">BytesDooIT</span>
+            <img class="layout-logo" src="../assets/logo.png" @click="handleLogoClick"/>
+<!--            <span style="color: orange" @click="handleLogoClick">BytesDooIT</span>-->
           </div>
 
           <div class="layout-nav">
@@ -23,7 +24,7 @@
               好片
             </MenuItem>
             <MenuItem name="live" to="Live">
-              <Icon type="ios-mic" color="#fff"></Icon>
+              <Icon type="ios-mic" color="#aaaaaa"></Icon>
               直播
             </MenuItem>
             <MenuItem name="recruitment" to="Recruitment">
@@ -35,48 +36,48 @@
               面试
             </MenuItem>
           </div>
+          <Submenu v-if="is_login" name="3">
+            <template slot="title">
+              <Avatar class="user-avatar" ref="avatar" size="large">
+                {{user_data.username}}
+              </Avatar>
+            </template>
+            <MenuItem name="home">
+              <Icon type="md-person"></Icon>
+              个人中心
+            </MenuItem>
+            <MenuGroup title="好文">
+              <MenuItem name="new_post">
+                <Icon type="ios-add-circle" color="orange"></Icon>
+                发布文章
+              </MenuItem>
+              <MenuItem name="3-2" disabled>
+                <Icon type="ios-add-circle"></Icon>
+                文章管理
+              </MenuItem>
+            </MenuGroup>
+            <MenuGroup title="好片">
+              <MenuItem name="3-3" disabled>
+                <Icon type="ios-cloud-upload" color="#00CC99"></Icon>
+                视频投稿
+              </MenuItem>
+              <MenuItem name="3-5" disabled>
+                <Icon type="ios-cloud-upload"></Icon>
+                投稿管理
+              </MenuItem>
+            </MenuGroup>
+            <MenuGroup title="其他">
+              <MenuItem name="logout">
+                <Icon type="md-log-out"></Icon>
+                退出
+              </MenuItem>
+            </MenuGroup>
+          </Submenu>
 
-          <div class="layout-nav-right">
-            <div v-if="is_login">
-              <Dropdown style="margin-left: 20px" @on-click="handleDropDown">
-                <Avatar class="user-avatar" ref="avatar" size="large">
-                  {{user_data.username}}
-                </Avatar>
-
-                <DropdownMenu slot="list">
-                  <DropdownItem name="new_post">
-                    <Icon type="ios-add-circle" color="orange"></Icon>
-                    发布文章
-                  </DropdownItem>
-                  <DropdownItem>
-                    <Icon type="ios-cloud-upload" color="#00CC99"></Icon>
-                    视频投稿
-                  </DropdownItem>
-
-                  <DropdownItem divided name="home">
-                    <Icon type="md-person"></Icon>
-                    个人中心
-                  </DropdownItem>
-                  <DropdownItem name="packet">
-                    <Icon type="md-briefcase"></Icon>
-                    我的口袋
-                  </DropdownItem>
-
-                  <DropdownItem divided name="logout">
-                    <Icon type="md-log-out"></Icon>
-                    退出
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-
-            </div>
-
-            <div v-if="!is_login">
-              <Button ghost type="text" to="/Login">登录</Button>
-              <Button ghost type="warning" to="/Register">注册</Button>
-            </div>
+          <div class="layout-nav-right" v-if="!is_login">
+            <Button ghost type="warning" to="/Login">登录</Button>
+            <Button type="warning" to="/Register">注册</Button>
           </div>
-
         </Menu>
       </Header>
 
@@ -151,6 +152,7 @@
        * 处理头像下拉菜单选择
        */
       handleDropDown(name) {
+        console.log(name);
         switch (name) {
           case 'home':
             this.$router.push('/Home');
@@ -212,13 +214,9 @@
   }
 
   .layout-logo {
-    width: 100px;
-    height: 30px;
-    background: #515a6e;
-    border-radius: 3px;
+    width: 200px;
     float: left;
-    top: 8px;
-    left: 20px;
+    padding-top: 3px;
 
     color: #fff;
     font-size: 30px
@@ -230,10 +228,9 @@
   }
 
   .layout-nav-right {
-    background: #515a6e;
     border-radius: 3px;
     top: 8px;
-    left: 20px;
+    float: right;
   }
 
   .layout-footer-center {
@@ -251,5 +248,15 @@
     color: #fff;
     text-align: center;
     border-radius: 2px;
+  }
+
+  .layout-header-bar{
+    /*position: 'fixed', width: '100%', zIndex: '99999'}*/
+    background: #fff;
+    box-shadow: 0 2px 2px rgba(0,0,0,.1);
+    position: fixed;
+    width: 100%;
+    z-index: 99999;
+    opacity: 90%;
   }
 </style>

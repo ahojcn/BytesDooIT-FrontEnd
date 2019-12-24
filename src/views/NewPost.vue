@@ -269,7 +269,6 @@
           is_draft: false,
           tags: this.tags,
           category: this.category
-
         }).then(res => {
           this.loading = false;
           this.$Loading.finish();

@@ -3,16 +3,16 @@
     <!--  loading  -->
     <Spin size="large" fix v-if="loading"></Spin>
 
-    <Row>
-      <Col span="5">
-        <Card :padding="0" :bordered="false" style="width: 300px;">
+    <Row :gutter="16">
+      <Col :lg="5">
+        <Card :padding="0" :bordered="false" style="width: auto">
           <div slot="title">
             <Icon type="ios-heart" color="pink"></Icon>
             好文
           </div>
 
           <div slot="extra">
-            <Tag color="warning">{{total_post}}</Tag>
+            <span>{{total_post}}</span>
           </div>
 
           <Input size="large" v-model="search_key" autofocus search placeholder="根据标题搜索"></Input>
@@ -49,13 +49,22 @@
           </div>
         </Card>
       </Col>
-      <Col span="19">
+
+      <Col :lg="19">
         <Card shadow>
           <div slot="title">
-            <Avatar class="user-avatar" ref="avatar">
-              {{cur_post.username}}
-            </Avatar>
-            <b>{{cur_post.username}}</b>
+            <div>
+              <div style="text-align: center;">
+                <div style="display: inline;">
+                  <h1>{{cur_post.title}}</h1>
+                </div>
+                <div style="display: inline;">
+                  <Tag :fade="false" color="primary" v-for="item in cur_post.tags" :key="item.id">{{item.name}}</Tag>
+                  <Tag :fade="false" color="warning" v-for="item in cur_post.category" :key="item.id">{{item.name}}
+                  </Tag>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div slot="extra">
@@ -65,10 +74,10 @@
           </div>
 
           <div>
-            <div>
-              <h1>{{cur_post.title}}</h1>
-              <!-- TODO 显示文章 tags categories -->
-            </div>
+            <Avatar class="user-avatar" ref="avatar" size="large">
+              {{cur_post.username}}
+            </Avatar>
+            <b>{{cur_post.username}}：</b>
 
             <mavon-editor
               class="md"
@@ -163,17 +172,18 @@
             this.total_page = res.data.data.total_page;
             this.total_post = res.data.data.total_post;
           }
+          this.cur_post = this.posts[0];
 
-          let post_id = this.$route.query.post_id;
-          this.cur_post = this.posts[0];  // 默认显示第一篇
-          if (post_id !== undefined || post_id !== null) {  // 有参数，查找文章 list 中是否有这篇文章
-            for (let i = 0; i < this.posts.length; i++) {
-              if (this.posts[i].post_id === post_id) {
-                this.cur_post = this.posts;
-                break;
-              }
-            }
-          }
+          // let post_id = this.$route.query.post_id;
+          // this.cur_post = this.posts[0];  // 默认显示第一篇
+          // if (post_id !== undefined || post_id !== null) {  // 有参数，查找文章 list 中是否有这篇文章
+          //   for (let i = 0; i < this.posts.length; i++) {
+          //     if (this.posts[i].post_id.toString() === post_id) {
+          //       this.cur_post = this.posts[i];
+          //       break;
+          //     }
+          //   }
+          // }
 
           this.loading = false;
         }).catch(err => {
@@ -190,12 +200,18 @@
     },
 
     mounted() {
+      let post_id = this.$route.query.post_id;
+      if (post_id !== undefined || post_id !== null) {  // 有参数，查找文章 list 中是否有这篇文章
+        // todo
+      }
+
       this.getPosts();
     },
   }
 </script>
 
 <style scoped>
+
   .user-avatar {
     color: #f56a00;
     background-color: #fde3cf
