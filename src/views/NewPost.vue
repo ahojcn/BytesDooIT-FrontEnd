@@ -3,9 +3,12 @@
     <!--  loading  -->
     <Spin size="large" fix v-if="loading"></Spin>
 
+    <!--  发布文章添加 tag、category 对话框  -->
     <Modal
       v-model="show_modal"
       title="发布文章"
+      :mask-closable="false"
+      :closable="false"
     >
       <table>
         <tr>
@@ -20,14 +23,16 @@
           <!--  todo  -->
           <td>文章分类：</td>
           <td>
-            <Tag v-for="item in category" :key="item" :name="item" closable @on-close="handleCloseCategory">{{item}}</Tag>
+            <Tag v-for="item in category" :key="item" :name="item" closable @on-close="handleCloseCategory">{{item}}
+            </Tag>
             <Button icon="ios-add" type="dashed" size="small" @click="handleAddCategory">添加分类</Button>
           </td>
         </tr>
         <tr>
           <td></td>
           <td>
-            <CheckboxGroup @on-change="handleCategoryCheckChange">
+            <!--             @on-change="handleCategoryCheckChange"-->
+            <CheckboxGroup v-model="category">
               <Checkbox v-for="item in prev_category" :key="item.category_id" :label="item.category_name"></Checkbox>
             </CheckboxGroup>
           </td>
@@ -38,6 +43,53 @@
         <Button type="warning" :loading="loading" @click="handleModalClickOk">发布文章</Button>
       </div>
     </Modal>
+
+
+    <!--  发布文章添加 tag、category 对话框  -->
+    <Modal
+      v-model="show_success_modal"
+      :mask-closable="false"
+      :closable="false"
+    >
+      <div slot="header">
+        <Icon type="md-checkmark-circle-outline" color="green" size="20"></Icon>
+        <span style="font-size: 20px"><b>发布成功</b></span>
+      </div>
+
+      <div>
+        <table>
+          <tr>
+            <td>标题：</td>
+            <td>{{success_modal_show_data.title}}</td>
+          </tr>
+          <tr>
+            <td>时间：</td>
+            <td>{{new Date(success_modal_show_data.create_datetime).toLocaleDateString()}}</td>
+          </tr>
+          <tr>
+            <td>标签：</td>
+            <td v-for="(item, index) in success_modal_show_data.tags">
+              <Tag color="magenta">{{item.name}}</Tag>
+            </td>
+          </tr>
+          <tr>
+            <td>分类：</td>
+            <td v-for="(item, index) in success_modal_show_data.category">
+              <Tag color="magenta">{{item.name}}</Tag>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>{{success_modal_show_data.content}} ...</td>
+          </tr>
+        </table>
+      </div>
+
+      <div slot="footer">
+        <Button type="primary" size="large" @click="show_success_modal=!show_success_modal">好的</Button>
+      </div>
+    </Modal>
+
 
     <div style="padding-bottom: 10px">
       <Row>
@@ -58,6 +110,8 @@
       </Row>
     </div>
 
+    <!--    TODO 发布后跳转   -->
+
     <mavon-editor
       v-model="content"
       ref="md"
@@ -77,6 +131,7 @@
         content: '',  // 正文
 
         show_modal: false,  // 发布文章添加标签、分类的对话框
+        show_success_modal: false,  // 成功发布后的信息展示对话框
         loading: false,  // 是否加载中
 
         is_login: false,  // 是否已登录
@@ -88,6 +143,8 @@
         prev_category: [],  // 用户之前的分类
         category: [],  // 分类
         tmp_category: '',  // 临时变量
+
+        success_modal_show_data: {},  // 成功后对话框显示的数据
       }
     },
     methods: {
@@ -96,7 +153,7 @@
        */
       handleAddCategory() {
         let max_len = 3;
-        if (this.tags.length >= max_len) {
+        if (this.category.length >= max_len) {
           this.$Message.error({background: true, content: `最多 ${max_len} 个分类哟~`});
           return;
         }
@@ -117,6 +174,9 @@
             })
           },
           onOk: () => {
+            if (this.category.includes(this.tmp_category)) {
+              return;
+            }
             this.category.push(this.tmp_category);
             this.tmp_category = ''
           },
@@ -124,11 +184,17 @@
       },
       /**
        * 选中之前的分类
-       */
-      handleCategoryCheckChange(item) {
+       *
+       handleCategoryCheckChange(item) {
+        if (this.category.includes(item[0])
+          || item.length === 0) {
+          return;
+        }
         this.category.push(item[0]);
         // console.log(this.category)
       },
+       */
+      ///
       /**
        * 删除分类
        */
@@ -181,6 +247,7 @@
       /**
        * ctrl + s 保存时候触发
        * TODO 保存为草稿
+       * is_draft = true
        * value -> markdown content
        * html -> html content render
        */
@@ -211,6 +278,9 @@
             this.$Message.error({background: true, content: '你还什么都没写哟'});
           } else {
             this.$Message.success({background: true, content: res.data.msg});
+            this.success_modal_show_data = res.data.data;
+            this.show_modal = !this.show_modal;
+            this.show_success_modal = !this.show_success_modal;
           }
 
         }).catch(err => {
@@ -278,5 +348,9 @@
 </script>
 
 <style scoped>
+
+  td {
+    width: 100px;
+  }
 
 </style>
