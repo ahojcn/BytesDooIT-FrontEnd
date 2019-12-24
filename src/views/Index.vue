@@ -81,7 +81,7 @@
         </Menu>
       </Header>
 
-      <Content :style="{margin: '88px 20px 0', minHeight: '1000px'}">
+      <Content :style="{margin: '88px 20px 0', flex: '1'}">
         <transition enter-active-class="fadeIn" mode="out-in" translate="yes" leave-active-class="fadeOut">
           <router-view v-if="init_flag" class="animated"></router-view>
         </transition>
@@ -211,6 +211,10 @@
     position: relative;
     border-radius: 4px;
     overflow: scroll;
+
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
   }
 
   .layout-logo {

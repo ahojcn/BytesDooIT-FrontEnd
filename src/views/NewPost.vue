@@ -115,7 +115,7 @@
     <mavon-editor
       v-model="content"
       ref="md"
-      style="z-index: 90"
+      style="z-index: 90; display: flex; min-height: 100vh; flex-direction: column;"
       @save="handleSave"
     >
     </mavon-editor>
