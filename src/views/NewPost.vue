@@ -12,7 +12,7 @@
     >
       <table>
         <tr>
-          <td>文章标签：</td>
+          <td style="width: 100px">文章标签：</td>
           <td>
             <Tag v-for="item in tags" :key="item" :name="item" closable @on-close="handleCloseTag">{{item}}</Tag>
             <Button icon="ios-add" type="dashed" size="small" @click="handleAddTag">添加标签</Button>
@@ -21,7 +21,7 @@
         <br>
         <tr>
           <!--  todo  -->
-          <td>文章分类：</td>
+          <td style="width: 100px">文章分类：</td>
           <td>
             <Tag v-for="item in category" :key="item" :name="item" closable @on-close="handleCloseCategory">{{item}}
             </Tag>
@@ -31,8 +31,7 @@
         <tr>
           <td></td>
           <td>
-            <!--             @on-change="handleCategoryCheckChange"-->
-            <CheckboxGroup v-model="category">
+            <CheckboxGroup v-model="category" @on-change="handleCategoryCheckChange">
               <Checkbox v-for="item in prev_category" :key="item.category_id" :label="item.category_name"></Checkbox>
             </CheckboxGroup>
           </td>
@@ -78,15 +77,11 @@
               <Tag color="magenta">{{item.name}}</Tag>
             </td>
           </tr>
-          <tr>
-            <td></td>
-            <td>{{success_modal_show_data.content}} ...</td>
-          </tr>
         </table>
       </div>
 
       <div slot="footer">
-        <Button type="primary" size="large" @click="show_success_modal=!show_success_modal">好的</Button>
+        <Button type="primary" size="large" @click="jumpToIndexWithPostId">好的</Button>
       </div>
     </Modal>
 
@@ -109,8 +104,6 @@
         </Col>
       </Row>
     </div>
-
-    <!--    TODO 发布后跳转   -->
 
     <mavon-editor
       v-model="content"
@@ -149,6 +142,12 @@
     },
     methods: {
       /**
+       * 发布成功后跳转到首页，并带上 post id
+       */
+      jumpToIndexWithPostId() {
+        this.$router.push(`/Post?post_id=${this.success_modal_show_data.post_id}`)
+      },
+      /**
        * 添加分类
        */
       handleAddCategory() {
@@ -183,18 +182,15 @@
         });
       },
       /**
-       * 选中之前的分类
-       *
-       handleCategoryCheckChange(item) {
-        if (this.category.includes(item[0])
-          || item.length === 0) {
-          return;
-        }
-        this.category.push(item[0]);
-        // console.log(this.category)
-      },
+       * 之前的分类选中 / 取消选中的时候
        */
-      ///
+      handleCategoryCheckChange(item) {
+        let max_len = 3;
+        if (this.category.length > max_len) {
+          this.$Message.error({background: true, content: `最多 ${max_len} 个分类哟~`});
+          this.category.pop();
+        }
+      },
       /**
        * 删除分类
        */
@@ -272,9 +268,9 @@
         }).then(res => {
           this.loading = false;
           this.$Loading.finish();
-          console.log(res);
           if (res.data.status_code === -1) {
-            this.$Message.error({background: true, content: '你还什么都没写哟'});
+            this.$Message.error({background: true, content: res.data.msg});
+            this.show_modal = !this.show_modal;
           } else {
             this.$Message.success({background: true, content: res.data.msg});
             this.success_modal_show_data = res.data.data;
@@ -347,9 +343,5 @@
 </script>
 
 <style scoped>
-
-  td {
-    width: 100px;
-  }
 
 </style>

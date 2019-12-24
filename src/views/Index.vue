@@ -2,7 +2,7 @@
 
   <div class="layout">
     <!--  返回顶部按钮  -->
-    <BackTop :height="100" :bottom="200" @on-click="handleBack2Top">
+    <BackTop :height="100" :bottom="200" :style="{zIndex: '99999'}" @on-click="handleBack2Top">
       <div class="back2top">返回顶端</div>
     </BackTop>
 
@@ -260,7 +260,7 @@
     box-shadow: 0 2px 2px rgba(0,0,0,.1);
     position: fixed;
     width: 100%;
-    z-index: 99999;
+    z-index: 9999;
     opacity: 90%;
   }
 </style>
