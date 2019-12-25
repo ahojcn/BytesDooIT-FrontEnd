@@ -89,14 +89,8 @@
                   {{p.content.substring(0, 30)}}
                 </div>
                 <div slot="extra">
-                  <Tag color="pink">
-                    <Icon type="md-thumbs-up"></Icon>
-                    {{p.like_count}}
-                  </Tag>
-                  <Tag type="border" color="warning">
-                    <Icon type="logo-snapchat" color="orange"></Icon>
-                    {{p.food_count}}
-                  </Tag>
+                  <span style="color: orange">{{p.like_count}}</span>赞
+                  <span style="color: orange">{{p.food_count}}</span>辣条
                 </div>
               </Cell>
             </div>
@@ -159,7 +153,28 @@
               :readmodel="true"
             ></mavon-editor>
 
-            <Divider orientation="left">正文</Divider>
+            <Divider orientation="left">EOF</Divider>
+
+            <div slot="title">
+              <div>
+                <div style="text-align: center;">
+                  <div style="display: inline;">
+                    <Poptip trigger="hover">
+                      <div slot="content">
+                        点击投喂给作者一包辣条<br>不能反悔哟<br>
+                        当前拥有辣条
+                        <span style="color: orange">{{user_data.food_num}}</span>
+                      </div>
+                      <a>
+                        <img src="../assets/latiao.png" style="width: 50px" alt="辣条"
+                             @click="giveLaTiao(cur_post.post_id)">
+                      </a>
+                    </Poptip>
+                    本文收到<span style="color: orange">{{cur_post.food_count}}</span>辣条
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </Card>
       </Col>
@@ -174,6 +189,8 @@
     data() {
       return {
         loading: true,
+        user_data: {},
+        is_login: false,
 
         page_index: 1,  // 当前页
         page_size: 9,  // 每页多少个 post
@@ -193,6 +210,25 @@
       }
     },
     methods: {
+      /**
+       * 投喂辣条
+       */
+      giveLaTiao(post_id) {
+        this.$Loading.start();
+
+        this.$axios.post('/api/post/food/', {
+          post_id: post_id
+        }).then(res => {
+          this.$Loading.finish();
+          if (res.data.status_code === -1) {
+            this.$Message.error({background: true, content: res.data.msg});
+          } else if (res.data.status_code === 0) {
+            this.$Message.success({background: true, content: '投喂成功'})
+          }
+        }).catch(err => {
+          this.$Loading.error({background: true, content: '小蜜蜂飞不到那哟'});
+        })
+      },
       /**
        * 跳转到首页
        */
@@ -268,9 +304,11 @@
        * 获取单个 post
        */
       getOnePost(post_id) {
+        this.$Loading.start();
         this.$axios.get('api/post/', {
           params: {post_id: post_id}
         }).then(res => {
+          this.$Loading.finish();
           if (res.data.data.posts.length === 0) {
             this.$Message.error({background: true, content: '无相关文章'});
             this.show_one_post = false;
@@ -279,12 +317,40 @@
           }
 
         }).catch(err => {
+          this.$Loading.error();
           this.$Message.error({background: true, content: '小蜜蜂飞不过去'});
         })
+      },
+      /**
+       * 检查是否已登录
+       */
+      check_login() {
+        this.$Loading.start();
+        this.$axios.get('api/user/session/')
+          .then(res => {
+            this.$Loading.finish();
+            this.is_login = res.data.data.is_login;
+            if (this.is_login === true) {
+              this.user_data = res.data.data;
+              if (this.user_data.is_active === false) {
+                this.$Message.error({background: true, content: '请查收邮件并激活账号'})
+              }
+            }
+          })
+          .catch(err => {
+            // console.log(err);
+            this.$Loading.error();
+            this.$Message['error']({
+              background: true,
+              content: '电波无法到达'
+            });
+          });
       },
     },
 
     mounted() {
+      this.check_login();
+
       let post_id = this.$route.query.post_id;
       if (post_id !== undefined && post_id !== null) {
         this.show_one_post = !this.show_one_post;
