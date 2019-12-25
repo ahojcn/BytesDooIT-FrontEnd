@@ -43,6 +43,10 @@
 
                 <!-- TODO 使用邮箱登录-->
                 <Button size="large" long type="text" disabled>使用邮箱登录</Button>
+                <Button size="large" long type="text" to="/Register" target="_blank">
+                  没有账号？注册一个
+                  <Icon type="ios-arrow-forward"></Icon>
+                </Button>
               </FormItem>
             </Col>
           </Row>

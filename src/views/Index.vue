@@ -10,7 +10,9 @@
       <Header class="layout-header-bar">
         <Menu mode="horizontal" active-name="post" @on-select="handleDropDown">
           <div class="layout-logo">
-            <img class="layout-logo" src="../assets/logo.png" @click="handleLogoClick"/>
+            <a>
+              <img class="layout-logo" src="../assets/logo.png" @click="handleLogoClick"/>
+            </a>
 <!--            <span style="color: orange" @click="handleLogoClick">BytesDooIT</span>-->
           </div>
 

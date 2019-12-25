@@ -17,6 +17,9 @@
                 <Avatar class="user-avatar" ref="avatar" size="large">
                   {{one_post.username}}
                 </Avatar>
+                <span style="color: #fb7299; font-weight: 700">
+                    {{one_post.username}}
+                  </span>
               </div>
             </div>
           </div>
@@ -76,7 +79,7 @@
             <span>{{total_post}}</span>
           </div>
 
-          <Input size="large" v-model="search_key" autofocus search placeholder="根据标题搜索"></Input>
+          <Input size="large" v-model="search_key" autofocus search placeholder="搜索"></Input>
 
           <CellGroup ref="cellgroup" @on-click="handleOnClickCell" style="min-height: 500px">
             <div v-for="(p, index) in searchPost(search_key)">
@@ -115,7 +118,15 @@
                   <Avatar class="user-avatar" ref="avatar" size="large">
                     {{cur_post.username}}
                   </Avatar>
-                  {{cur_post.username}}
+                  <span style="color: #fb7299; font-weight: 700">
+                    {{cur_post.username}}
+                  </span>
+                  <!--                  todo 发布此文章的用户信息-->
+                  <!--                  <Badge :text="'LV ' + user_data.level" type="info">-->
+                  <!--                    <span slot="text">-->
+                  <!--                       LV <b>{{user_data.level}}</b>-->
+                  <!--                    </span>-->
+                  <!--                  </Badge>-->
                 </div>
               </div>
             </div>
@@ -156,22 +167,40 @@
             <Divider orientation="left">EOF</Divider>
 
             <div slot="title">
-              <div>
-                <div style="text-align: center;">
-                  <div style="display: inline;">
-                    <Poptip trigger="hover">
-                      <div slot="content">
-                        点击投喂给作者一包辣条<br>不能反悔哟<br>
-                        当前拥有辣条
-                        <span style="color: orange">{{user_data.food_num}}</span>
-                      </div>
-                      <a>
-                        <img src="../assets/latiao.png" style="width: 50px" alt="辣条"
-                             @click="giveLaTiao(cur_post.post_id)">
-                      </a>
-                    </Poptip>
-                    本文收到<span style="color: orange">{{cur_post.food_count}}</span>辣条
-                  </div>
+              <div style="text-align: center;">
+                <div style="display: inline;">
+                  <Row>
+                    <Col :span="6">&nbsp;</Col>
+                    <Col :span="6">
+                      <!-- 投喂辣条 -->
+                      <Poptip trigger="hover">
+                        <div slot="content">
+                          送给作者一包辣条！<br>不能反悔！<br>
+                          我的辣条
+                          <span style="color: orange">{{user_data.food_num}}</span>
+                        </div>
+                        <a>
+                          <img src="../assets/latiao.png" style="width: 50px" alt="辣条"
+                               @click="giveLaTiao(cur_post.post_id)">
+                        </a>
+                      </Poptip>
+                      <br>
+                      本文收到<span style="color: orange">{{cur_post.food_count}}</span>辣条
+                    </Col>
+                    <Col :span="6">
+                      <!-- 点赞 -->
+                      <Poptip trigger="hover">
+                        <div slot="content">
+                          点赞本文
+                        </div>
+                        <a style="color: pink">
+                          <Icon type="md-thumbs-up" size="60" @click="likePost(cur_post.post_id)"></Icon>
+                        </a>
+                      </Poptip>
+                      本文收到<span style="color: orange">{{cur_post.like_count}}</span>赞
+                    </Col>
+                    <Col :span="6">&nbsp;</Col>
+                  </Row>
                 </div>
               </div>
             </div>
@@ -220,13 +249,40 @@
           post_id: post_id
         }).then(res => {
           this.$Loading.finish();
+
           if (res.data.status_code === -1) {
             this.$Message.error({background: true, content: res.data.msg});
           } else if (res.data.status_code === 0) {
             this.$Message.success({background: true, content: '投喂成功'})
+            // 更新文章信息
+            this.getPosts();
           }
         }).catch(err => {
-          this.$Loading.error({background: true, content: '小蜜蜂飞不到那哟'});
+          this.$Loading.error();
+          this.$Message.error({background: true, content: '小蜜蜂飞不到那哟'});
+        })
+      },
+      /**
+       * 给文章点赞
+       */
+      likePost(post_id) {
+        this.$Loading.start();
+
+        this.$axios.post('/api/post/like/', {
+          post_id: post_id
+        }).then(res => {
+          this.$Loading.finish();
+
+          if (res.data.status_code === -1) {
+            this.$Message.error({background: true, content: res.data.msg});
+          } else if (res.data.status_code === 0) {
+            this.$Message.success({background: true, content: '点赞成功'});
+            // 更新文章信息
+            this.getPosts();
+          }
+        }).catch(err => {
+          this.$Loading.error();
+          this.$Message.error({background: true, content: '小蜜蜂飞不到那哟'});
         })
       },
       /**
@@ -245,7 +301,8 @@
           return this.posts;
         } else {
           this.posts.forEach(item => {
-            if (item.title.indexOf(keywords) !== -1) {
+            if (item.title.indexOf(keywords) !== -1
+              || item.content.indexOf(keywords) !== -1) {
               ret.push(item);
             }
           });
