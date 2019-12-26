@@ -173,7 +173,7 @@
                         写得好，赞一个
                       </div>
                       <a style="color: pink">
-                        <Icon type="md-thumbs-up" size="50" @click="likePost(cur_post.post_id)"></Icon>
+                        <Icon type="md-thumbs-up" size="55" @click="likePost(cur_post.post_id)"></Icon>
                       </a>
                     </Poptip>
                     <br>
@@ -229,7 +229,7 @@
                         点赞本文
                       </div>
                       <a style="color: pink">
-                        <Icon type="md-thumbs-up" size="60" @click="likePost(cur_post.post_id)"></Icon>
+                        <Icon type="md-thumbs-up" size="55" @click="likePost(cur_post.post_id)"></Icon>
                       </a>
                     </Poptip>
                     <br>
@@ -295,6 +295,8 @@
             this.$Message.success({background: true, content: '投喂成功'})
             // 更新文章信息
             this.getPosts();
+            // 更新用户信息
+            this.check_login();
           }
         }).catch(err => {
           this.$Loading.error();

@@ -23,43 +23,48 @@
 
       <div style="text-align: center;">
         <div style="display: inline;">
-          <Button @click="handleActive" type="error" size="large">未激活</Button>
+          <Button v-if="!user_data.is_active" @click="handleActive" type="error" size="large">未激活</Button>
         </div>
       </div>
 
-      <Row>
-        <Col :span="4">
+      <div>
+        邮箱：{{user_data.email}}<br>
+        性别：{{user_data.gender}}<br>
+        签名：{{user_data.description}}<br>
+        等级：LV {{user_data.level}}<br>
+        经验：EXP {{user_data.exp_val}}<br>
+        辣条：{{user_data.food_num}} 个<br>
+        注册时间：{{new Date(user_data.reg_datetime).toLocaleDateString()}}<br>
+        最近登录：{{new Date(user_data.last_login_datetime).toLocaleDateString()}}<br>
+      </div>
+
+      <Tabs>
+        <TabPane label="文章管理" icon="logo-apple">
           <div>
-            邮箱：{{user_data.email}}<br>
-            性别：{{user_data.gender}}<br>
-            签名：{{user_data.description}}<br>
-            等级：LV {{user_data.level}}<br>
-            经验：EXP {{user_data.exp_val}}<br>
-            辣条：{{user_data.food_num}} 个<br>
-            注册时间：{{new Date(user_data.reg_datetime).toLocaleDateString()}}<br>
-            最近登录：{{new Date(user_data.last_login_datetime).toLocaleDateString()}}<br>
+            111
           </div>
-        </Col>
-        <Col :span="20">
-          <Tabs type="card">
-            <TabPane label="macOS" icon="logo-apple">
-              <div>
-                标签一的内容
-              </div>
-            </TabPane>
-            <TabPane label="Windows" icon="logo-windows">
-              <div>
-                标签二的内容
-              </div>
-            </TabPane>
-            <TabPane label="Linux" icon="logo-tux">
-              <div>
-                标签三的内容
-              </div>
-            </TabPane>
-          </Tabs>
-        </Col>
-      </Row>
+        </TabPane>
+        <TabPane label="投稿管理" icon="logo-windows">
+          <div>
+            标签二的内容
+          </div>
+        </TabPane>
+        <TabPane label="简历管理" icon="logo-tux">
+          <div>
+            标签三的内容
+          </div>
+        </TabPane>
+        <TabPane label="笔试安排" icon="logo-tux">
+          <div>
+            标签三的内容
+          </div>
+        </TabPane>
+        <TabPane label="面试安排" icon="logo-tux">
+          <div>
+            标签三的内容
+          </div>
+        </TabPane>
+      </Tabs>
 
     </Card>
 
@@ -128,10 +133,11 @@
             });
           })
       },
-
     },
     mounted() {
       this.check_login();
+
+      console.log(this.$route.query['tab']);
     }
   }
 </script>
