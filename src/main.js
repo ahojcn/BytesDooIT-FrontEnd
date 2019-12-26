@@ -19,10 +19,14 @@ import animated from 'animate.css'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 
+// live2d 4 vue
+// import live2d4vue from 'live2d4vue'
+
 Vue.use(ViewUI);
 Vue.use(VueAxios, axios);
 Vue.use(animated);
 Vue.use(mavonEditor);
+// Vue.use(live2d4vue);
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000/';
 axios.defaults.withCredentials = true;
