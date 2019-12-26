@@ -20,7 +20,6 @@
         </tr>
         <br>
         <tr>
-          <!--  todo  -->
           <td style="width: 100px">文章分类：</td>
           <td>
             <Tag v-for="item in category" :key="item" :name="item" closable @on-close="handleCloseCategory">{{item}}
@@ -44,7 +43,7 @@
     </Modal>
 
 
-    <!--  发布文章添加 tag、category 对话框  -->
+    <!--  发布成功的对话框  -->
     <Modal
       v-model="show_success_modal"
       :mask-closable="false"
@@ -96,8 +95,7 @@
           <Input v-model="title" size="large" placeholder="输入文章标题"></Input>
         </Col>
         <Col span="2">
-          <!--          TODO  保存草稿 -->
-          <Button size="large" type="warning" long ghost disabled>保存草稿</Button>
+          <Button size="large" type="warning" long ghost @click="handleSave">保存草稿</Button>
         </Col>
         <Col span="2">
           <Button size="large" long type="warning" @click="show_modal=!show_modal">发布文章</Button>
@@ -138,9 +136,42 @@
         tmp_category: '',  // 临时变量
 
         success_modal_show_data: {},  // 成功后对话框显示的数据
+
+        post_id: null,
       }
     },
     methods: {
+      /**
+       * ctrl + s 保存时候触发
+       * 点击保存草稿触发
+       * 网页定时器保存触发
+       */
+      handleSave(value, html) {
+        this.$Loading.start();
+        this.$axios.post('api/post/', {
+          title: this.title,
+          content: this.content,
+          tags: this.tags,
+          category: this.category,
+          is_draft: true,
+          post_id: this.post_id
+        }).then(res => {
+          this.$Loading.finish();
+          if (res.data.status_code === 0) {
+            this.post_id = res.data.data.post_id;
+            this.$Message.success({background: true, content: res.data.msg});
+          } else {
+            this.$Loading.error();
+            this.$Message.error({background: true, content: res.data.msg});
+          }
+        }).catch(err => {
+          this.$Loading.error();
+          this.$Message['error']({
+            background: true,
+            content: '电波无法到达'
+          });
+        });
+      },
       /**
        * 发布成功后跳转到首页，并带上 post id
        */
@@ -241,19 +272,6 @@
         this.handleSubmit();
       },
       /**
-       * ctrl + s 保存时候触发
-       * TODO 保存为草稿
-       * is_draft = true
-       * value -> markdown content
-       * html -> html content render
-       */
-      handleSave(value, html) {
-        this.$Message.success({
-          background: true,
-          content: '已保存'
-        });
-      },
-      /**
        * 发布文章, is_draft = false
        */
       handleSubmit() {
@@ -336,8 +354,17 @@
           });
       },
     },
+
     created() {
       this.check_login();
+
+      // 设置定时保存
+      setInterval(() => {
+        if (this.title !== '' && this.content !== '') {
+          this.handleSave();
+        }
+      }, 3000);
+
     },
   }
 </script>

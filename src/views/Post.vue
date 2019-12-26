@@ -15,11 +15,11 @@
             <div style="text-align: center;">
               <div style="display: inline;">
                 <Avatar class="user-avatar" ref="avatar" size="large">
-                  {{one_post.username}}
+                  {{one_post.user_data.username}}
                 </Avatar>
                 <span style="color: #fb7299; font-weight: 700">
-                    {{one_post.username}}
-                  </span>
+                    {{one_post.user_data.username}}
+                </span>
               </div>
             </div>
           </div>
@@ -116,17 +116,17 @@
               <div style="text-align: center;">
                 <div style="display: inline;">
                   <Avatar class="user-avatar" ref="avatar" size="large">
-                    {{cur_post.username}}
+                    {{cur_post.user_data.username}}
                   </Avatar>
                   <span style="color: #fb7299; font-weight: 700">
-                    {{cur_post.username}}
+                    {{cur_post.user_data.username}}
                   </span>
-                  <!--                  todo 发布此文章的用户信息-->
-                  <!--                  <Badge :text="'LV ' + user_data.level" type="info">-->
-                  <!--                    <span slot="text">-->
-                  <!--                       LV <b>{{user_data.level}}</b>-->
-                  <!--                    </span>-->
-                  <!--                  </Badge>-->
+
+                  <Badge :text="'LV ' + cur_post.user_data.level" type="info">
+                                      <span slot="text">
+                                         LV <b>{{cur_post.user_data.level}}</b>
+                                      </span>
+                  </Badge>
                 </div>
               </div>
             </div>
@@ -229,13 +229,17 @@
         select_index: 0,  // 当前选中的 cell 的 index
 
         posts: [],  // post 列表
-        cur_post: {},  // 当前展示的 post
+        cur_post: {
+          user_data: {},
+        },  // 当前展示的 post
 
         search_key: '',  // 搜索关键词
         posts_backup: [],  // 开始搜索时，备份之前的 posts，当搜索结束后重新给值
 
         show_one_post: false,  // 当网页参数有 post id 时候，显示单个文章
-        one_post: {},  // 单个 post 内容
+        one_post: {
+          user_data: {},
+        },  // 单个 post 内容
       }
     },
     methods: {
