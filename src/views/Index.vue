@@ -7,81 +7,81 @@
     </BackTop>
 
     <Layout>
-      <Header class="layout-header-bar">
-        <Menu mode="horizontal" active-name="post" @on-select="handleDropDown">
-          <div class="layout-logo">
-            <a>
-              <img class="layout-logo" src="../assets/logo.png" @click="handleLogoClick"/>
-            </a>
-<!--            <span style="color: orange" @click="handleLogoClick">BytesDooIT</span>-->
-          </div>
+      <!--      <Header class="layout-header-bar">-->
+      <Menu theme="primary" class="layout-nav-menu" mode="horizontal" active-name="post" @on-select="handleDropDown">
+        <div class="layout-logo">
+          <a>
+            <!--            <img class="layout-logo" src="../assets/logo.png" @click="handleLogoClick"/>-->
+            <span style="color: orange" @click="handleLogoClick">BytesDooIT</span>
+          </a>
+        </div>
 
-          <div class="layout-nav">
-            <MenuItem name="post" to="Post">
-              <Icon type="ios-heart" color="pink"></Icon>
-              好文
+        <div class="layout-nav">
+          <MenuItem name="post" to="Post">
+            <Icon type="ios-heart" color="pink"></Icon>
+            好文
+          </MenuItem>
+          <MenuItem name="video" to="Video">
+            <Icon type="logo-youtube" color="orange"></Icon>
+            好片
+          </MenuItem>
+          <MenuItem name="live" to="Live">
+            <Icon type="ios-mic" color="#aaaaaa"></Icon>
+            直播
+          </MenuItem>
+          <MenuItem name="recruitment" to="Recruitment">
+            <Icon type="ios-megaphone" color="#00FF99"></Icon>
+            招聘
+          </MenuItem>
+          <MenuItem name="interview" to="Interview">
+            <Icon type="md-people" color="#00CCFF"></Icon>
+            面试
+          </MenuItem>
+        </div>
+        <Submenu v-if="is_login" name="3">
+          <template slot="title">
+            <Avatar class="user-avatar" ref="avatar" size="large">
+              {{user_data.username}}
+            </Avatar>
+          </template>
+          <MenuItem name="home">
+            <Icon type="md-person"></Icon>
+            个人中心
+          </MenuItem>
+          <MenuGroup title="好文">
+            <MenuItem name="new_post">
+              <Icon type="ios-add-circle" color="orange"></Icon>
+              发布文章
             </MenuItem>
-            <MenuItem name="video" to="Video">
-              <Icon type="logo-youtube" color="orange"></Icon>
-              好片
+            <MenuItem name="3-2" disabled>
+              <Icon type="ios-add-circle"></Icon>
+              文章管理
             </MenuItem>
-            <MenuItem name="live" to="Live">
-              <Icon type="ios-mic" color="#aaaaaa"></Icon>
-              直播
+          </MenuGroup>
+          <MenuGroup title="好片">
+            <MenuItem name="3-3" disabled>
+              <Icon type="ios-cloud-upload" color="#00CC99"></Icon>
+              视频投稿
             </MenuItem>
-            <MenuItem name="recruitment" to="Recruitment">
-              <Icon type="ios-megaphone" color="#00FF99"></Icon>
-              招聘
+            <MenuItem name="3-5" disabled>
+              <Icon type="ios-cloud-upload"></Icon>
+              投稿管理
             </MenuItem>
-            <MenuItem name="interview" to="Interview">
-              <Icon type="md-people" color="#00CCFF"></Icon>
-              面试
+          </MenuGroup>
+          <MenuGroup title="其他">
+            <MenuItem name="logout">
+              <Icon type="md-log-out"></Icon>
+              退出
             </MenuItem>
-          </div>
-          <Submenu v-if="is_login" name="3">
-            <template slot="title">
-              <Avatar class="user-avatar" ref="avatar" size="large">
-                {{user_data.username}}
-              </Avatar>
-            </template>
-            <MenuItem name="home">
-              <Icon type="md-person"></Icon>
-              个人中心
-            </MenuItem>
-            <MenuGroup title="好文">
-              <MenuItem name="new_post">
-                <Icon type="ios-add-circle" color="orange"></Icon>
-                发布文章
-              </MenuItem>
-              <MenuItem name="3-2" disabled>
-                <Icon type="ios-add-circle"></Icon>
-                文章管理
-              </MenuItem>
-            </MenuGroup>
-            <MenuGroup title="好片">
-              <MenuItem name="3-3" disabled>
-                <Icon type="ios-cloud-upload" color="#00CC99"></Icon>
-                视频投稿
-              </MenuItem>
-              <MenuItem name="3-5" disabled>
-                <Icon type="ios-cloud-upload"></Icon>
-                投稿管理
-              </MenuItem>
-            </MenuGroup>
-            <MenuGroup title="其他">
-              <MenuItem name="logout">
-                <Icon type="md-log-out"></Icon>
-                退出
-              </MenuItem>
-            </MenuGroup>
-          </Submenu>
+          </MenuGroup>
+        </Submenu>
 
-          <div class="layout-nav-right" v-if="!is_login">
-            <Button ghost type="warning" to="/Login">登录</Button>
-            <Button type="warning" to="/Register">注册</Button>
-          </div>
-        </Menu>
-      </Header>
+        <div class="layout-nav-right" v-if="!is_login">
+          <Button ghost type="warning" to="/Login">登录</Button>
+          <Button type="warning" to="/Register">注册</Button>
+        </div>
+      </Menu>
+      <!--      </Header>-->
 
       <Content :style="{margin: '88px 20px 0', flex: '1'}">
         <transition enter-active-class="fadeIn" mode="out-in" translate="yes" leave-active-class="fadeOut">
@@ -222,7 +222,8 @@
   .layout-logo {
     width: 200px;
     float: left;
-    padding-top: 3px;
+    /*padding-top: 3px;*/
+    padding-left: 5%;
 
     color: #fff;
     font-size: 30px
@@ -256,13 +257,14 @@
     border-radius: 2px;
   }
 
-  .layout-header-bar{
-    /*position: 'fixed', width: '100%', zIndex: '99999'}*/
-    background: #fff;
-    box-shadow: 0 2px 2px rgba(0,0,0,.1);
+  .layout-nav-menu {
+    /*box-shadow: 0 1px 1px rgba(0, 0, 0, .1);*/
+    box-shadow: 0 1px 30px;
     position: fixed;
     width: 100%;
     z-index: 9999;
     opacity: 90%;
+    background-image: url('../assets/navbk.jpg');
+    background-size: cover;
   }
 </style>
