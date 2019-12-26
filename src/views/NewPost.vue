@@ -108,6 +108,8 @@
       ref="md"
       style="z-index: 90; display: flex; min-height: 100vh; flex-direction: column;"
       @save="handleSave"
+      @imgAdd="uploadPostImage"
+      @imgDel="delPostImage"
     >
     </mavon-editor>
   </div>
@@ -138,9 +140,52 @@
         success_modal_show_data: {},  // 成功后对话框显示的数据
 
         post_id: null,
+
+        img_files: [],  // 文章中上传的图片
       }
     },
     methods: {
+      /**
+       * 上传图片
+       */
+      uploadPostImage(pos, file) {
+        this.$Loading.start();
+        this.$Message.info({
+          background: true,
+          content: '上传 img 中...'
+        });
+        let formdata = new FormData();
+        formdata.append('img', file);
+        this.img_files[pos] = file;
+        this.$axios.post('api/post/img/', formdata)
+          .then(res => {
+            if (res.data.status_code === 0) {
+              // 将返回的url替换到文本原位置![...](0) -> ![...](url)
+              this.$refs.md.$img2Url(pos, res.data.data.img_url);
+              this.$Loading.finish();
+              this.$Message.success({
+                background: true,
+                content: res.data.msg
+              });
+            } else {
+              this.$Message.error({background: true, content: res.data.msg});
+              this.delPostImage(pos);  // 删除添加的图片
+            }
+          })
+          .catch(err => {
+            this.$Loading.error();
+            this.$Message['error']({
+              background: true,
+              content: '电波无法到达'
+            });
+          });
+      },
+      /**
+       * 删除图片
+       */
+      delPostImage(pos) {
+        delete this.img_files[pos];
+      },
       /**
        * ctrl + s 保存时候触发
        * 点击保存草稿触发
@@ -359,11 +404,12 @@
       this.check_login();
 
       // 设置定时保存
+      // todo fix bugs
       setInterval(() => {
         if (this.title !== '' && this.content !== '') {
           this.handleSave();
         }
-      }, 3000);
+      }, 5000);
 
     },
   }

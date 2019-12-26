@@ -137,7 +137,8 @@
     mounted() {
       this.check_login();
 
-      console.log(this.$route.query['tab']);
+      // todo
+      // console.log(this.$route.query['tab']);
     }
   }
 </script>
