@@ -89,13 +89,13 @@
       <Row>
         <Col span="2">
           <!--          TODO  文章管理 -->
-          <Button type="text" icon="md-arrow-round-back" size="large">文章管理</Button>
+          <Button ghost icon="md-arrow-round-back" size="large" long>文章管理</Button>
         </Col>
         <Col span="18">
           <Input v-model="title" size="large" placeholder="输入文章标题"></Input>
         </Col>
         <Col span="2">
-          <Button size="large" type="warning" long ghost @click="handleSave">保存草稿</Button>
+          <Button size="large" long ghost @click="handleSave">保存草稿</Button>
         </Col>
         <Col span="2">
           <Button size="large" long type="warning" @click="show_modal=!show_modal">发布文章</Button>

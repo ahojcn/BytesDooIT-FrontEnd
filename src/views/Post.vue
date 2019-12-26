@@ -68,7 +68,7 @@
 
     <Row :gutter="16">
       <!--   左边栏   -->
-      <Col :lg="5">
+      <Col :lg="4">
         <Card :padding="0" :bordered="false" style="width: auto">
           <div slot="title">
             <Icon type="ios-heart" color="pink"></Icon>
@@ -109,32 +109,30 @@
       </Col>
 
       <!--   文章内容   -->
-      <Col :lg="19">
+      <Col :lg="20">
         <Card shadow>
           <div slot="title">
-            <div>
-              <div style="text-align: center;">
-                <div style="display: inline;">
-                  <Avatar class="user-avatar" ref="avatar" size="large">
-                    {{cur_post.user_data.username}}
-                  </Avatar>
-                  <span style="color: #fb7299; font-weight: 700">
+            <div style="text-align: center;">
+              <div style="display: inline;">
+                <Avatar class="user-avatar" ref="avatar" size="large">
+                  {{cur_post.user_data.username}}
+                </Avatar>
+                <span style="color: #fb7299; font-weight: 700">
                     {{cur_post.user_data.username}}
                   </span>
 
-                  <Badge :text="'LV ' + cur_post.user_data.level" type="info">
+                <Badge :text="'LV ' + cur_post.user_data.level" type="info">
                                       <span slot="text">
                                          LV <b>{{cur_post.user_data.level}}</b>
                                       </span>
-                  </Badge>
-                </div>
+                </Badge>
               </div>
             </div>
           </div>
 
           <div>
             <div style="text-align: center;">
-              <div style="display: inline;">
+              <div style="display: inline; ">
                 <h1>{{cur_post.title}}</h1>
 
                 发布：{{new Date(cur_post.create_datetime).toLocaleDateString()}}
@@ -145,6 +143,44 @@
                 <Tag :fade="false" color="primary" v-for="item in cur_post.tags" :key="item.id">{{item.name}}</Tag>
                 <Tag :fade="false" color="warning" v-for="item in cur_post.category" :key="item.id">{{item.name}}
                 </Tag>
+              </div>
+            </div>
+
+            <div style="text-align: center;">
+              <div style="display: inline;">
+                <Row>
+                  <Col :span="10">&nbsp;</Col>
+                  <Col :span="2">
+                    <!-- 投喂辣条 -->
+                    <Poptip trigger="hover">
+                      <div slot="content">
+                        送给作者一包辣条！<br>不能反悔！<br>
+                        我的辣条
+                        <span style="color: orange">{{user_data.food_num}}</span>
+                      </div>
+                      <a>
+                        <img src="../assets/latiao.png" style="width: 50px" alt="辣条"
+                             @click="giveLaTiao(cur_post.post_id)">
+                      </a>
+                    </Poptip>
+                    <br>
+                    <span style="color: orange">{{cur_post.food_count}}</span>辣条
+                  </Col>
+                  <Col :span="2">
+                    <!-- 点赞 -->
+                    <Poptip trigger="hover">
+                      <div slot="content">
+                        写得好，赞一个
+                      </div>
+                      <a style="color: pink">
+                        <Icon type="md-thumbs-up" size="50" @click="likePost(cur_post.post_id)"></Icon>
+                      </a>
+                    </Poptip>
+                    <br>
+                    <span style="color: orange">{{cur_post.like_count}}</span>赞
+                  </Col>
+                  <Col :span="10">&nbsp;</Col>
+                </Row>
               </div>
             </div>
 
@@ -166,42 +202,41 @@
 
             <Divider orientation="left">EOF</Divider>
 
-            <div slot="title">
-              <div style="text-align: center;">
-                <div style="display: inline;">
-                  <Row>
-                    <Col :span="6">&nbsp;</Col>
-                    <Col :span="6">
-                      <!-- 投喂辣条 -->
-                      <Poptip trigger="hover">
-                        <div slot="content">
-                          送给作者一包辣条！<br>不能反悔！<br>
-                          我的辣条
-                          <span style="color: orange">{{user_data.food_num}}</span>
-                        </div>
-                        <a>
-                          <img src="../assets/latiao.png" style="width: 50px" alt="辣条"
-                               @click="giveLaTiao(cur_post.post_id)">
-                        </a>
-                      </Poptip>
-                      <br>
-                      本文收到<span style="color: orange">{{cur_post.food_count}}</span>辣条
-                    </Col>
-                    <Col :span="6">
-                      <!-- 点赞 -->
-                      <Poptip trigger="hover">
-                        <div slot="content">
-                          点赞本文
-                        </div>
-                        <a style="color: pink">
-                          <Icon type="md-thumbs-up" size="60" @click="likePost(cur_post.post_id)"></Icon>
-                        </a>
-                      </Poptip>
-                      本文收到<span style="color: orange">{{cur_post.like_count}}</span>赞
-                    </Col>
-                    <Col :span="6">&nbsp;</Col>
-                  </Row>
-                </div>
+            <div style="text-align: center;">
+              <div style="display: inline;">
+                <Row>
+                  <Col :span="6">&nbsp;</Col>
+                  <Col :span="6">
+                    <!-- 投喂辣条 -->
+                    <Poptip trigger="hover">
+                      <div slot="content">
+                        送给作者一包辣条！<br>不能反悔！<br>
+                        我的辣条
+                        <span style="color: orange">{{user_data.food_num}}</span>
+                      </div>
+                      <a>
+                        <img src="../assets/latiao.png" style="width: 50px" alt="辣条"
+                             @click="giveLaTiao(cur_post.post_id)">
+                      </a>
+                    </Poptip>
+                    <br>
+                    <span style="color: orange">{{cur_post.food_count}}</span>辣条
+                  </Col>
+                  <Col :span="6">
+                    <!-- 点赞 -->
+                    <Poptip trigger="hover">
+                      <div slot="content">
+                        点赞本文
+                      </div>
+                      <a style="color: pink">
+                        <Icon type="md-thumbs-up" size="60" @click="likePost(cur_post.post_id)"></Icon>
+                      </a>
+                    </Poptip>
+                    <br>
+                    <span style="color: orange">{{cur_post.like_count}}</span>赞
+                  </Col>
+                  <Col :span="6">&nbsp;</Col>
+                </Row>
               </div>
             </div>
           </div>
@@ -347,7 +382,7 @@
             this.total_page = res.data.data.total_page;
             this.total_post = res.data.data.total_post;
           }
-          this.cur_post = this.posts[0];
+          this.cur_post = this.posts[this.select_index];
 
           this.loading = false;
         }).catch(err => {

@@ -6,7 +6,7 @@
       <div class="back2top">返回顶端</div>
     </BackTop>
 
-    <Layout>
+    <Layout class="card-background">
       <!--      <Header class="layout-header-bar">-->
       <Menu theme="primary" class="layout-nav-menu" mode="horizontal" active-name="post" @on-select="handleDropDown">
         <div class="layout-logo">
@@ -83,7 +83,7 @@
       </Menu>
       <!--      </Header>-->
 
-      <Content :style="{margin: '88px 20px 0', flex: '1'}">
+      <Content class="layout-content">
         <transition enter-active-class="fadeIn" mode="out-in" translate="yes" leave-active-class="fadeOut">
           <router-view v-if="init_flag" class="animated"></router-view>
         </transition>
@@ -194,6 +194,7 @@
           });
       },
     },
+
     created() {
       this.init_flag = true;
       this.check_login();
@@ -207,16 +208,30 @@
     height: 100%;
   }
 
+  .card-background {
+    font-weight: 700;
+    background-image: url('../assets/navbk.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+  }
+
   .layout {
     border: 1px solid #d7dde4;
     background: #f5f7f9;
     position: relative;
     border-radius: 4px;
     overflow: scroll;
-
     display: flex;
     min-height: 100vh;
     flex-direction: column;
+  }
+
+  .layout-content {
+  /*{margin: '88px 20px 0', flex: '1', opacity: '0.93'}*/
+    margin: 88px 20px 0;
+    flex: 1;
+    opacity: 0.9;
   }
 
   .layout-logo {
@@ -242,6 +257,12 @@
 
   .layout-footer-center {
     text-align: center;
+    font-weight: 700;
+    color: #ffffff;
+    background-image: url('../assets/navbk.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
   }
 
   .user-avatar {
@@ -263,8 +284,10 @@
     position: fixed;
     width: 100%;
     z-index: 9999;
-    opacity: 90%;
+    /*opacity: 90%;*/
     background-image: url('../assets/navbk.jpg');
+    background-attachment: fixed;
     background-size: cover;
+    background-position: center;
   }
 </style>
