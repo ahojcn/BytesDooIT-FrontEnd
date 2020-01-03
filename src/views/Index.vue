@@ -26,7 +26,7 @@
             好片
           </MenuItem>
           <MenuItem name="live" to="Live">
-            <Icon type="ios-mic" color="#aaaaaa"></Icon>
+            <Icon type="ios-microphone"></Icon>
             直播
           </MenuItem>
           <MenuItem name="recruitment" to="Recruitment">
@@ -231,7 +231,7 @@
   /*{margin: '88px 20px 0', flex: '1', opacity: '0.93'}*/
     margin: 88px 20px 0;
     flex: 1;
-    opacity: 0.9;
+    opacity: 0.85;
   }
 
   .layout-logo {
@@ -252,6 +252,7 @@
   .layout-nav-right {
     border-radius: 3px;
     top: 8px;
+    padding-right: 80px;
     float: right;
   }
 
