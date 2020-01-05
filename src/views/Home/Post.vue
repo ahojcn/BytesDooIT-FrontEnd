@@ -10,6 +10,9 @@
           </div>
           <div slot="description">
             {{item.content.substring(0, 100)}}
+            <br>
+            创建：{{new Date(item.create_datetime).toLocaleDateString()}} |
+            更新：{{new Date(item.update_datetime).toLocaleDateString()}}
           </div>
         </ListItemMeta>
 
@@ -27,13 +30,12 @@
             <!-- todo 评论数 -->
             暂无
           </li>
-
           <!-- todo 编辑、删除 -->
           <li>
-            <a>编辑</a>
-          </li>
-          <li>
-            <a>删除</a>
+            <ButtonGroup>
+              <Button ghost type="primary">编辑</Button>
+              <Button ghost type="error" @click="handleDeletePost(item)">删除</Button>
+            </ButtonGroup>
           </li>
         </template>
       </ListItem>
@@ -87,7 +89,30 @@
             });
           });
       },
-
+      /**
+       * 删除文章按钮点击
+       */
+      handleDeletePost(post) {
+        console.log(post);
+        this.$Modal.confirm({
+          title: '确认删除？',
+          content: `${post.title}`,
+          onOk: () => {
+            this.$axios.post('/api/post/draft/', {
+              params: {
+                post_id: post.post_id,
+              }
+            }).then(res => {
+              console.log(res);
+            }).catch(err => {
+              console.log(err);
+            })
+          },
+          onCancel: () => {
+            this.$Message.info('Clicked cancel');
+          }
+        });
+      },
       /**
        * 获取自己的 post 草稿
        */

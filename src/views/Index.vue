@@ -17,23 +17,23 @@
         </div>
 
         <div class="layout-nav">
-          <MenuItem name="post" to="Post">
+          <MenuItem name="post" to="/Post">
             <Icon type="ios-heart" color="pink"></Icon>
             好文
           </MenuItem>
-          <MenuItem name="video" to="Video">
+          <MenuItem name="video" to="/Video">
             <Icon type="logo-youtube" color="orange"></Icon>
             好片
           </MenuItem>
-          <MenuItem name="live" to="Live">
+          <MenuItem name="live" to="/Live">
             <Icon type="ios-microphone"></Icon>
             直播
           </MenuItem>
-          <MenuItem name="recruitment" to="Recruitment">
+          <MenuItem name="recruitment" to="/Recruitment">
             <Icon type="ios-megaphone" color="#00FF99"></Icon>
             招聘
           </MenuItem>
-          <MenuItem name="interview" to="Interview">
+          <MenuItem name="interview" to="/Interview">
             <Icon type="md-people" color="#00CCFF"></Icon>
             面试
           </MenuItem>
@@ -154,7 +154,6 @@
        * 处理头像下拉菜单选择
        */
       handleDropDown(name) {
-        console.log(name);
         switch (name) {
           case 'home':
             this.$router.push('/Home');
