@@ -38,97 +38,29 @@
         最近登录：{{new Date(user_data.last_login_datetime).toLocaleDateString()}}<br>
       </div>
 
-      <Divider></Divider>
-
-      <div>
-        <Row :gutter="16">
-          <Col :lg="4">
-            <Card title="管理" icon="md-settings" :padding="0">
-              <CellGroup>
-                <Cell v-for="(item, index) in settings" :key="item.index" :title="item.title"></Cell>
-              </CellGroup>
-            </Card>
-          </Col>
-          <Col :lg="20">
-            <transition enter-active-class="fadeIn" mode="out-in" translate="yes" leave-active-class="fadeOut">
-              <router-view v-if="init_flag" class="animated"></router-view>
-            </transition>
-          </Col>
-        </Row>
-      </div>
-
-      <Tabs>
-        <TabPane label="文章管理" icon="ios-heart">
-          <div>
-            <List item-layout="vertical">
-              <ListItem v-for="(item, index) in posts" :key="item.post_id">
-                <ListItemMeta>
-                  <div slot="title">
-                    <Tag v-if="item.is_draft" color="pink">草稿</Tag>
-                    <Tag v-if="!item.is_draft" color="green">已发布</Tag>
-                    {{item.title}}
-                  </div>
-                  <div slot="description">
-                    {{item.content.substring(0, 100)}}
-                  </div>
-                </ListItemMeta>
-
-                <template slot="action">
-                  <li>
-                    <img src="../assets/latiao.png" style="width: 15px"/>
-                    {{item.food_count}}
-                  </li>
-                  <li>
-                    <Icon type="md-thumbs-up"></Icon>
-                    {{item.like_count}}
-                  </li>
-                  <li>
-                    <Icon type="ios-chatbubbles-outline"></Icon>
-                    <!-- todo 评论数 -->
-                    暂无
-                  </li>
-
-                  <li>
-                    <a href="">编辑</a>
-                  </li>
-                  <li>
-                    <a href="">删除</a>
-                  </li>
-                </template>
-              </ListItem>
-            </List>
-
-            <div style="text-align: center;">
-              <div style="display: inline;">
-                <Page :total="total_post" @on-change="handlePageIndexChange" :page-size="page_size" show-elevator
-                      show-elevator></Page>
-              </div>
-            </div>
-          </div>
-        </TabPane>
-        <TabPane label="投稿管理" disabled icon="logo-youtube">
-          <div>
-            标签二的内容
-          </div>
-        </TabPane>
-        <TabPane label="简历管理" disabled icon="logo-tux">
-          <div>
-            标签三的内容
-          </div>
-        </TabPane>
-        <TabPane label="笔试安排" disabled icon="logo-tux">
-          <div>
-            标签三的内容
-          </div>
-        </TabPane>
-        <TabPane label="面试安排" disabled icon="logo-tux">
-          <div>
-            标签三的内容
-          </div>
-        </TabPane>
-      </Tabs>
-
     </Card>
+
+    <Divider dashed size="small"></Divider>
+
+    <div>
+      <Row :gutter="16">
+        <Col :lg="4">
+          <Card title="管理" icon="md-settings" :padding="0">
+            <CellGroup @on-click="handleOnClickCell">
+              <Cell v-for="(item, index) in settings" :to="item.path" :selected="select_index === item.name"
+                    :key="item.index" :name="item.name" :title="item.title"></Cell>
+            </CellGroup>
+          </Card>
+        </Col>
+        <Col :lg="20">
+          <transition enter-active-class="fadeIn" mode="out-in" translate="yes" leave-active-class="fadeOut">
+            <Card>
+              <router-view v-if="init_flag" class="animated"></router-view>
+            </Card>
+          </transition>
+        </Col>
+      </Row>
+    </div>
 
   </div>
 </template>
@@ -143,19 +75,22 @@
         is_login: false,
 
         settings: [
-          {index: 0, title: '文章管理'},
-          {index: 1, title: '视频管理'},
-          {index: 2, title: '直播管理'},
-          {index: 3, title: '简历管理'},
-          {index: 4, title: '面试安排'},
+          {index: 0, title: '文章管理', name: 'HomePost', selected: false, path: '/Home/Post'},
+          {index: 1, title: '视频管理', name: 'HomeVideo', selected: false, path: '/Home/Video'},
+          {index: 2, title: '直播管理', name: 'HomeLive', selected: false, path: '/Home/Live'},
+          {index: 3, title: '简历管理', name: 'HomeResume', selected: false, path: '/Home/Resume'},
+          {index: 4, title: '面试安排', name: 'HomeInterview', selected: false, path: '/Home/Interview'},
         ],
-
-        page_index: 1,  // 当前页
-        page_size: 9,  // 每页多少个 post
-        total_page: 1,  // 总共分多少页
-        total_post: 0,  // 总共多少篇 post
-        posts: [],  // post 列表
       }
+    },
+    computed: {
+      select_index: {
+        get() {
+          return this.$route.name;
+        },
+        set(val) {
+        }
+      },
     },
     methods: {
       /**
@@ -210,45 +145,17 @@
           })
       },
       /**
-       * 获取自己的 post 草稿
+       * 切换点击事件
        */
-      getAllPost() {
-        this.$Loading.start();
-        this.$axios.get('api/post/draft/', {
-          params: {
-            page_index: this.page_index,
-            page_size: this.page_size,
-          }
-        }).then(res => {
-          console.log(res);
-          if (res.data.status_code === 0) {
-            this.posts = res.data.data.posts;
-            this.page_index = res.data.data.page_index;
-            this.page_size = res.data.data.page_size;
-            this.total_page = res.data.data.total_page;
-            this.total_post = res.data.data.total_post;
-          }
-        }).catch(err => {
-          console.log(err)
-        });
-      },
-      /**
-       * 当页码发生改变
-       */
-      handlePageIndexChange(i) {
-        this.page_index = i;
-        this.getAllPost();
+      handleOnClickCell(name) {
+        this.select_index = name;
       },
     },
     mounted() {
       this.init_flag = true;
       this.check_login();
 
-      this.getAllPost();
-
-      // todo
-      // console.log(this.$route.query['tab']);
-    }
+    },
   }
 </script>
 
