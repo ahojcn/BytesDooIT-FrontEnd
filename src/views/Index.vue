@@ -2,8 +2,10 @@
 
   <div class="layout">
     <!--  返回顶部按钮  -->
-    <BackTop :height="100" :bottom="200" :style="{zIndex: '99999'}" @on-click="handleBack2Top">
-      <div class="back2top">返回顶端</div>
+    <BackTop :height="100" :bottom="100" :style="{zIndex: '99999'}" @on-click="handleBack2Top">
+      <div class="back2top">
+        <img src="../assets/back2top.png">
+      </div>
     </BackTop>
 
     <Layout class="card-background">
@@ -48,26 +50,14 @@
             <Icon type="md-person"></Icon>
             个人中心
           </MenuItem>
-          <MenuGroup title="好文">
-            <MenuItem name="new_post">
-              <Icon type="ios-add-circle" color="orange"></Icon>
-              发布文章
-            </MenuItem>
-            <MenuItem name="3-2" disabled>
-              <Icon type="ios-add-circle"></Icon>
-              文章管理
-            </MenuItem>
-          </MenuGroup>
-          <MenuGroup title="好片">
-            <MenuItem name="3-3" disabled>
-              <Icon type="ios-cloud-upload" color="#00CC99"></Icon>
-              视频投稿
-            </MenuItem>
-            <MenuItem name="3-5" disabled>
-              <Icon type="ios-cloud-upload"></Icon>
-              投稿管理
-            </MenuItem>
-          </MenuGroup>
+          <MenuItem name="new_post">
+            <Icon type="md-add-circle" color="orange"></Icon>
+            发布文章
+          </MenuItem>
+          <MenuItem name="3-3" disabled>
+            <Icon type="ios-cloud-upload"></Icon>
+            视频投稿
+          </MenuItem>
           <MenuGroup title="其他">
             <MenuItem name="logout">
               <Icon type="md-log-out"></Icon>
@@ -272,9 +262,6 @@
 
   .back2top {
     padding: 10px;
-    background: rgba(0, 153, 229, .7);
-    color: #fff;
-    text-align: center;
     border-radius: 2px;
   }
 
