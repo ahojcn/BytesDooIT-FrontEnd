@@ -50,7 +50,7 @@
       :closable="false"
     >
       <div slot="header">
-        <Icon type="md-checkmark-circle-outline" color="green" size="20"></Icon>
+        <Icon type="md-checkmark-circle-outline" color="orange" size="20"></Icon>
         <span style="font-size: 20px"><b>发布成功</b></span>
       </div>
 
@@ -80,7 +80,8 @@
       </div>
 
       <div slot="footer">
-        <Button type="primary" size="large" @click="jumpToIndexWithPostId">好的</Button>
+        <Button type="primary" ghost to="/Home/Post" size="large">文章管理</Button>
+        <Button type="warning" size="large" @click="jumpToIndexWithPostId">去看看</Button>
       </div>
     </Modal>
 
@@ -88,17 +89,16 @@
     <div style="padding-bottom: 10px">
       <Row>
         <Col span="2">
-          <!--          TODO  文章管理 -->
-          <Button ghost icon="md-arrow-round-back" size="large" long>文章管理</Button>
+          <Button ghost to="/Home/Post" size="large" long>文章管理</Button>
         </Col>
         <Col span="18">
           <Input v-model="title" size="large" placeholder="输入文章标题"></Input>
         </Col>
         <Col span="2">
-          <Button size="large" long ghost @click="handleSave">保存草稿</Button>
+          <Button long size="large" ghost @click="handleSave">保存草稿</Button>
         </Col>
-        <Col span="2">
-          <Button size="large" long type="warning" @click="show_modal=!show_modal">发布文章</Button>
+        <Col :span="2">
+          <Button long size="large" type="warning" @click="show_modal=!show_modal">发布文章</Button>
         </Col>
       </Row>
     </div>

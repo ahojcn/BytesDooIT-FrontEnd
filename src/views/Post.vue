@@ -159,7 +159,7 @@
                         <span style="color: orange">{{user_data.food_num}}</span>
                       </div>
                       <a>
-                        <img src="../assets/latiao.png" style="width: 50px" alt="辣条"
+                        <img src="../assets/latiao.png" style="width: 30px" alt="辣条"
                              @click="giveLaTiao(cur_post.post_id)">
                       </a>
                     </Poptip>
@@ -173,7 +173,7 @@
                         写得好，赞一个
                       </div>
                       <a style="color: pink">
-                        <Icon type="md-thumbs-up" size="55" @click="likePost(cur_post.post_id)"></Icon>
+                        <Icon type="md-thumbs-up" size="35" @click="likePost(cur_post.post_id)"></Icon>
                       </a>
                     </Poptip>
                     <br>
@@ -201,44 +201,6 @@
             ></mavon-editor>
 
             <Divider orientation="left">EOF</Divider>
-
-            <div style="text-align: center;">
-              <div style="display: inline;">
-                <Row>
-                  <Col :span="6">&nbsp;</Col>
-                  <Col :span="6">
-                    <!-- 投喂辣条 -->
-                    <Poptip trigger="hover">
-                      <div slot="content">
-                        送给作者一包辣条！<br>不能反悔！<br>
-                        我的辣条
-                        <span style="color: orange">{{user_data.food_num}}</span>
-                      </div>
-                      <a>
-                        <img src="../assets/latiao.png" style="width: 50px" alt="辣条"
-                             @click="giveLaTiao(cur_post.post_id)">
-                      </a>
-                    </Poptip>
-                    <br>
-                    <span style="color: orange">{{cur_post.food_count}}</span>辣条
-                  </Col>
-                  <Col :span="6">
-                    <!-- 点赞 -->
-                    <Poptip trigger="hover">
-                      <div slot="content">
-                        点赞本文
-                      </div>
-                      <a style="color: pink">
-                        <Icon type="md-thumbs-up" size="55" @click="likePost(cur_post.post_id)"></Icon>
-                      </a>
-                    </Poptip>
-                    <br>
-                    <span style="color: orange">{{cur_post.like_count}}</span>赞
-                  </Col>
-                  <Col :span="6">&nbsp;</Col>
-                </Row>
-              </div>
-            </div>
           </div>
         </Card>
       </Col>
