@@ -46,7 +46,7 @@
       <Row :gutter="16">
         <Col :lg="4">
           <Card title="管理" icon="md-settings" :padding="0">
-            <CellGroup @on-click="handleOnClickCell">
+            <CellGroup>
               <Cell v-for="(item, index) in settings" :to="item.path" :selected="select_index === item.name"
                     :key="item.index" :name="item.name" :title="item.title"></Cell>
             </CellGroup>
@@ -143,12 +143,6 @@
               content: '电波无法到达'
             });
           })
-      },
-      /**
-       * 切换点击事件
-       */
-      handleOnClickCell(name) {
-        this.select_index = name;
       },
     },
     mounted() {

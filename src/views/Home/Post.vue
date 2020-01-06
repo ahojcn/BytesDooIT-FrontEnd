@@ -30,13 +30,13 @@
             <!-- todo 评论数 -->
             暂无
           </li>
-          <!-- todo 编辑、删除 -->
-          <li>
-            <ButtonGroup>
-              <Button ghost type="primary">编辑</Button>
-              <Button ghost type="error" @click="handleDeletePost(item)">删除</Button>
-            </ButtonGroup>
-          </li>
+        </template>
+
+        <template slot="extra">
+          <ButtonGroup>
+            <Button ghost type="primary" @click="handleEditorPost(item)">编辑</Button>
+            <Button ghost type="error" @click="handleDeletePost(item)">删除</Button>
+          </ButtonGroup>
         </template>
       </ListItem>
     </List>
@@ -93,25 +93,39 @@
        * 删除文章按钮点击
        */
       handleDeletePost(post) {
-        console.log(post);
         this.$Modal.confirm({
           title: '确认删除？',
           content: `${post.title}`,
           onOk: () => {
+            this.$Loading.start();
             this.$axios.post('/api/post/draft/', {
-              params: {
-                post_id: post.post_id,
-              }
+              post_id: post.post_id,
             }).then(res => {
-              console.log(res);
+              this.$Loading.finish();
+              if (res.data.status_code === 0) {
+                this.$Message.success({background: true, content: res.data.msg});
+
+                this.getAllPost();
+              } else {
+                console.log(res);
+                this.$Message.error({background: true, content: res.data.msg})
+              }
             }).catch(err => {
               console.log(err);
+              this.$Loading.error();
+              this.$Message.error({background: true, content: '电波无法到达'})
             })
           },
           onCancel: () => {
             this.$Message.info('Clicked cancel');
           }
         });
+      },
+      /**
+       * 编辑文章按钮点击
+       */
+      handleEditorPost(post) {
+        this.$router.push({path: '/NewPost', query: {post_id: post.post_id}});
       },
       /**
        * 获取自己的 post 草稿
@@ -125,7 +139,6 @@
           }
         }).then(res => {
           this.$Loading.finish();
-          console.log(res);
           if (res.data.status_code === 0) {
             this.posts = res.data.data.posts;
             this.page_index = res.data.data.page_index;
@@ -137,7 +150,6 @@
           this.$Loading.error();
         });
       },
-
       /**
        * 当页码发生改变
        */

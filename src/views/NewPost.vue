@@ -89,13 +89,13 @@
       <Row>
         <Col span="2">
           <!--          TODO  文章管理 -->
-          <Button ghost style="font-weight: 700" icon="md-arrow-round-back" size="large" long>文章管理</Button>
+          <Button ghost icon="md-arrow-round-back" size="large" long>文章管理</Button>
         </Col>
         <Col span="18">
           <Input v-model="title" size="large" placeholder="输入文章标题"></Input>
         </Col>
         <Col span="2">
-          <Button size="large" style="font-weight: 700" long ghost @click="handleSave">保存草稿</Button>
+          <Button size="large" long ghost @click="handleSave">保存草稿</Button>
         </Col>
         <Col span="2">
           <Button size="large" long type="warning" @click="show_modal=!show_modal">发布文章</Button>
@@ -403,14 +403,36 @@
     created() {
       this.check_login();
 
-      // 设置定时保存
-      // todo fix bugs
-      setInterval(() => {
-        if (this.title !== '' && this.content !== '') {
-          this.handleSave();
-        }
-      }, 5000);
+      // 判断有无 post_id
+      let post_id = this.$route.query.post_id;
+      if (post_id !== undefined) {
+        // 获取此文相关内容
+        this.$Loading.start();
+        this.$axios.get('api/post/', {
+          params: {post_id: post_id, is_edit: true}
+        }).then(res => {
+          this.$Loading.finish();
 
+          if (res.data.data.posts.length === 0) {
+            this.$Message.error({background: true, content: '无相关文章'});
+            this.$router.go(-1);
+          } else {
+            let post = res.data.data.posts[0];
+            this.title = post.title;
+            this.content = post.content;
+            for (let i = 0; i < post.tags.length; i++) {
+              this.tags.push(post.tags[i].name);
+            }
+            for (let i = 0; i < post.category.length; i++) {
+              this.category.push(post.category[i].name);
+            }
+          }
+
+        }).catch(err => {
+          this.$Loading.error();
+          this.$Message.error({background: true, content: '小蜜蜂飞不过去'});
+        })
+      }
     },
   }
 </script>
