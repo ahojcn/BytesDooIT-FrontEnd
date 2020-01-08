@@ -1,5 +1,7 @@
 <template>
-  <h1>Resume</h1>
+  <Card>
+    <h1>Resume</h1>
+  </Card>
 </template>
 
 <script>

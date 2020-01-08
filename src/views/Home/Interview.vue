@@ -1,7 +1,9 @@
 <template>
-  <h1>
-    Interview
-  </h1>
+  <Card>
+    <h1>
+      Interview
+    </h1>
+  </Card>
 </template>
 
 <script>

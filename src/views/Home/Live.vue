@@ -1,5 +1,7 @@
 <template>
-  <h1>Live</h1>
+  <Card>
+    <h1>Live</h1>
+  </Card>
 </template>
 
 <script>
