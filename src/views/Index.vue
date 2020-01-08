@@ -132,10 +132,7 @@
             if (this.is_login === true && this.user_data.is_active === true) {
               this.$router.push('/NewPost');
             } else {
-              this.$Message.error({
-                background: true,
-                content: '账号未激活'
-              })
+              this.$Message.error({background: true, content: '账号未激活'});
             }
             break;
         }

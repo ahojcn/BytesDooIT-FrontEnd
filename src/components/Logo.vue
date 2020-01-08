@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <transition>
     <img class="animated fadeIn" src="@/assets/logo.png" @click="handleLogoClick" alt="logo">
