@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
 
-    <div v-if="init_flag" class="layout-main animated fadeIn">
+    <div class="layout-main animated fadeIn">
       <Logo style="width: 500px;"></Logo>
 
       <Card>
@@ -88,7 +88,6 @@
       };
 
       return {
-        init_flag: false,
         is_login: false,
 
         login_form: {
@@ -160,8 +159,6 @@
       },
     },
     created() {
-      this.init_flag = true;
-
       this.$Loading.start();
       getUserInfo().then(res => {
         this.$Loading.finish();

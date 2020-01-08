@@ -99,7 +99,6 @@
     },
     data() {
       return {
-        init_flag: false,
         is_login: false,
         user_data: {}
       };
@@ -163,8 +162,6 @@
     },
 
     created() {
-      this.init_flag = true;
-
       this.$Loading.start();
       getUserInfo().then(res => {
         this.$Loading.finish();

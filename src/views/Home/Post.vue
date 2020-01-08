@@ -60,7 +60,6 @@
     name: "HomePost",
     data() {
       return {
-        init_flag: false,
         user_data: {},
         is_login: false,
 
@@ -133,8 +132,6 @@
     },
 
     mounted() {
-      this.init_flag = true;
-
       this.$Loading.start();
       getUserInfo().then(res => {
         this.$Loading.finish();

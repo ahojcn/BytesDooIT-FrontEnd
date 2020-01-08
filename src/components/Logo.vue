@@ -1,7 +1,6 @@
 <template>
   <transition>
-    <img v-if="init_flag" class="animated fadeIn" src="@/assets/logo.png" @click="handleLogoClick" alt="logo">
-<!--    <span v-if="init_flag" class="animated flip" style="color: #fff; font-size: 30px">BytesDooIT</span>-->
+    <img class="animated fadeIn" src="@/assets/logo.png" @click="handleLogoClick" alt="logo">
   </transition>
 </template>
 
@@ -10,7 +9,6 @@
     name: "Logo",
     data() {
       return {
-        init_flag: false,
       }
     },
     methods: {
@@ -19,7 +17,6 @@
       }
     },
     created() {
-      this.init_flag = true;
     }
   }
 </script>
