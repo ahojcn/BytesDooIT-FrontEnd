@@ -45,7 +45,7 @@
         },
       });
 
-      window.L2Dwidget.on('*', (name)=>{
+      window.L2Dwidget.on('*', (name) => {
       });
     },
   }

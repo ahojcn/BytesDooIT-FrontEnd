@@ -12,17 +12,17 @@
           <Row :gutter="16">
             <Col span="12">
               <FormItem prop="username">
-                <Input type="text" v-model="login_form.username" placeholder="用户名">
+                <Input size="large" type="text" v-model="login_form.username" placeholder="用户名">
                   <Icon type="ios-person-outline" slot="prepend"></Icon>
                 </Input>
               </FormItem>
               <FormItem prop="password">
-                <Input type="password" v-model="login_form.password" placeholder="密码">
+                <Input size="large" type="password" v-model="login_form.password" placeholder="密码">
                   <Icon type="ios-lock-outline" slot="prepend"></Icon>
                 </Input>
               </FormItem>
               <FormItem prop="verify_code">
-                <Row :gutter="16">
+                <Row :gutter="2">
                   <Col span="12">
                     <Input v-model="login_form.verify_code" placeholder="验证码">
                       <Icon type="md-finger-print" slot="prepend"/>
@@ -37,12 +37,9 @@
             <Col span="12">
               <FormItem>
                 <Button size="large" long type="primary" @click="handleLogin">
-                  <Icon type="md-checkmark"></Icon>
                   登录
                 </Button>
 
-                <!-- TODO 使用邮箱登录-->
-                <Button size="large" long type="text" disabled>使用邮箱登录</Button>
                 <Button size="large" long type="text" to="/Register" target="_blank">
                   没有账号？注册一个
                   <Icon type="ios-arrow-forward"></Icon>
@@ -59,7 +56,9 @@
 </template>
 
 <script>
-  import Logo from '@/components/Logo'
+  import {login, getUserInfo} from '@/api/user';
+  import {verify_code_img} from '@/api/util';
+  import Logo from '@/components/Logo';
 
   export default {
     name: "Login",
@@ -117,85 +116,66 @@
       handleLogin() {
         this.$refs.login_form.validate((valid) => {
           if (valid) {
-            this.login();
+            this.$Loading.start();
+            login({
+              is_username: true,
+              username: this.login_form.username,
+              pwd: this.login_form.password,
+              local_time: Date.parse(Date()) / 1000,
+              verify_code: this.login_form.verify_code,
+            }).then(res => {
+              this.$Loading.finish();
+              if (res.status_code === 0) {
+                this.$Message.success({background: true, content: '欢迎回来, ' + res.data.username});
+                this.$router.push({path: '/'});
+              } else {
+                this.$Loading.error();
+                this.$Message.error({background: true, content: res.msg});
+              }
+
+            }).catch(err => {
+              this.$Loading.error();
+              this.$Message.error({background: true, content: '电波无法到达'});
+
+            })
           } else {
             this.$Message.error('请完善信息');
           }
         })
       },
       /**
-       * 登录
-       */
-      login() {
-        this.$Loading.start();
-        this.$axios.post('api/user/session/', {
-          is_username: true,
-          username: this.login_form.username,
-          pwd: this.login_form.password,
-          local_time: Date.parse(Date()) / 1000,
-          verify_code: this.login_form.verify_code,
-        }).then(res => {
-          if (res.data.status_code === 0) {
-            this.$Loading.finish();
-            this.$Message.success({
-              background: true,
-              content: '欢迎回来, ' + res.data.data.username,
-              duration: 10
-            });
-            this.$router.push('/');
-          } else {
-            this.$Loading.error();
-            this.$Message.error({
-              background: true,
-              content: res.data.msg,
-              duration: 5
-            });
-          }
-        }, err => {
-          this.$Loading.error();
-          console.log(err)
-        });
-      },
-      /**
        * 获取图片验证码
        */
       getVerifyCodeImg() {
         this.$Loading.start();
-        this.$axios.get('api/util/verify_code_img/', {responseType: 'blob'})
-          .then(res => {
-            this.$Loading.finish();
-            this.$refs.verify_code_img.src = window.URL.createObjectURL(res.data);
-          })
-          .catch(err => {
-            this.$Loading.error();
-            console.log(err)
-          });
-      },
-      /**
-       * 检查是否已登录
-       */
-      check_login() {
-        this.$Loading.start();
-        this.$axios.get('api/user/session/')
-          .then(res => {
-            this.$Loading.finish();
-            this.is_login = res.data.data.is_login;
-            if (this.is_login === true) {
-              this.$router.push('/')
-            }
-          })
-          .catch(err => {
-            this.$Loading.error();
-            this.$Message['error']({
-              background: true,
-              content: '电波无法到达'
-            });
-          });
+        verify_code_img().then(res => {
+          this.$Loading.finish();
+          this.$refs.verify_code_img.src = window.URL.createObjectURL(res);
+
+        }).catch(err => {
+          this.$Loading.error();
+          this.$Message.error({background: true, content: '电波无法到达'});
+
+        });
       },
     },
     created() {
-      this.check_login();
       this.init_flag = true;
+
+      this.$Loading.start();
+      getUserInfo().then(res => {
+        this.$Loading.finish();
+        this.is_login = res.data.is_login;
+        if (this.is_login === true) {
+          this.$router.push({path: '/'})
+        }
+
+      }).catch(err => {
+        this.$Loading.error();
+        this.$Message['error']({background: true, content: '电波无法到达'});
+
+      });
+
       this.getVerifyCodeImg();
     },
   }

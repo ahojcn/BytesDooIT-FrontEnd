@@ -210,6 +210,8 @@
 </template>
 
 <script>
+  import {getUserInfo} from '@/api/user';
+
   export default {
     name: "Post",
     data() {
@@ -381,35 +383,25 @@
           this.$Message.error({background: true, content: '小蜜蜂飞不过去'});
         })
       },
-      /**
-       * 检查是否已登录
-       */
-      check_login() {
-        this.$Loading.start();
-        this.$axios.get('api/user/session/')
-          .then(res => {
-            this.$Loading.finish();
-            this.is_login = res.data.data.is_login;
-            if (this.is_login === true) {
-              this.user_data = res.data.data;
-              if (this.user_data.is_active === false) {
-                this.$Message.error({background: true, content: '请查收邮件并激活账号'})
-              }
-            }
-          })
-          .catch(err => {
-            // console.log(err);
-            this.$Loading.error();
-            this.$Message['error']({
-              background: true,
-              content: '电波无法到达'
-            });
-          });
-      },
     },
 
     mounted() {
-      this.check_login();
+      this.$Loading.start();
+      getUserInfo().then(res => {
+        this.$Loading.finish();
+        this.is_login = res.data.is_login;
+        if (this.is_login === true) {
+          this.user_data = res.data;
+          if (this.user_data.is_active === false) {
+            this.$Message.error({background: true, content: '请查收邮件并激活账号'})
+          }
+        }
+
+      }).catch(err => {
+        this.$Loading.error();
+        this.$Message.error({background: true, content: '电波无法到达'});
+
+      });
 
       let post_id = this.$route.query.post_id;
       if (post_id !== undefined && post_id !== null) {

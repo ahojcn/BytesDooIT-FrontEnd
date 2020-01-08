@@ -74,8 +74,10 @@
       <!--      </Header>-->
 
       <Content class="layout-content">
-        <transition enter-active-class="fadeIn" mode="out-in" translate="yes" leave-active-class="fadeOut">
-          <router-view v-if="init_flag" class="animated"></router-view>
+        <transition mode="out-in"
+                    enter-active-class="animated fadeInDown"
+                    leave-active-class="animated fadeOutDown">
+          <router-view></router-view>
         </transition>
       </Content>
 
@@ -87,7 +89,8 @@
 </template>
 
 <script>
-  import Logo from '@/components/Logo'
+  import {getUserInfo} from '@/api/user';
+  import Logo from '@/components/Logo';
 
   export default {
     name: "Index",
@@ -114,31 +117,6 @@
           background: true,
           content: '欢迎回来~'
         })
-      },
-      /**
-       * 检查是否已登录
-       */
-      check_login() {
-        this.$Loading.start();
-        this.$axios.get('api/user/session/')
-          .then(res => {
-            this.$Loading.finish();
-            this.is_login = res.data.data.is_login;
-            if (this.is_login === true) {
-              this.user_data = res.data.data;
-              if (this.user_data.is_active === false) {
-                this.$Message.error({background: true, content: '请查收邮件并激活账号'})
-              }
-            }
-          })
-          .catch(err => {
-            // console.log(err);
-            this.$Loading.error();
-            this.$Message['error']({
-              background: true,
-              content: '电波无法到达'
-            });
-          });
       },
       /**
        * 处理头像下拉菜单选择
@@ -186,7 +164,23 @@
 
     created() {
       this.init_flag = true;
-      this.check_login();
+
+      this.$Loading.start();
+      getUserInfo().then(res => {
+        this.$Loading.finish();
+        this.is_login = res.data.is_login;
+        if (this.is_login === true) {
+          this.user_data = res.data;
+          if (this.user_data.is_active === false) {
+            this.$Message.error({background: true, content: '请查收邮件并激活账号'})
+          }
+        }
+
+      }).catch(err => {
+        this.$Loading.error();
+        this.$Message.error({background: true, content: '电波无法到达'});
+
+      });
     },
   }
 </script>
@@ -217,7 +211,7 @@
   }
 
   .layout-content {
-  /*{margin: '88px 20px 0', flex: '1', opacity: '0.93'}*/
+    /*{margin: '88px 20px 0', flex: '1', opacity: '0.93'}*/
     margin: 88px 20px 0;
     flex: 1;
     opacity: 0.85;

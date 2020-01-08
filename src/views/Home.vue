@@ -53,10 +53,10 @@
           </Card>
         </Col>
         <Col :lg="20">
-          <transition enter-active-class="fadeIn" mode="out-in" translate="yes" leave-active-class="fadeOut">
-            <Card>
-              <router-view v-if="init_flag" class="animated"></router-view>
-            </Card>
+          <transition mode="out-in"
+                      enter-active-class="animated bounceInRight"
+                      leave-active-class="animated bounceOutRight">
+            <router-view></router-view>
           </transition>
         </Col>
       </Row>
@@ -66,6 +66,8 @@
 </template>
 
 <script>
+  import {getUserInfo, active} from '@/api/user';
+
   export default {
     name: "Home",
     data() {
@@ -94,61 +96,43 @@
     },
     methods: {
       /**
-       * 检查是否已登录
-       */
-      check_login() {
-        this.$Loading.start();
-        this.$axios.get('api/user/session/')
-          .then(res => {
-            this.$Loading.finish();
-            this.is_login = res.data.data.is_login;
-            if (this.is_login === false) {
-              this.$router.push('/')
-            }
-            this.user_data = res.data.data;
-          })
-          .catch(err => {
-            this.$Loading.error();
-            this.$Message['error']({
-              background: true,
-              content: '电波无法到达'
-            });
-          });
-      },
-      /**
        * 激活账号点击事件
        */
       handleActive() {
         this.$Loading.start();
-        this.$axios.post('api/user/active/')
-          .then(res => {
-            this.$Loading.finish();
-            if (res.data.status_code === 0) {
-              this.$Message.success({
-                background: true,
-                content: res.data.msg
-              })
-            } else {
-              this.$Message.error({
-                background: true,
-                content: res.data.msg
-              })
-            }
-          })
-          .catch(err => {
-            this.$Loading.error();
-            this.$Loading.error();
-            this.$Message['error']({
-              background: true,
-              content: '电波无法到达'
-            });
-          })
+
+        active().then(res => {
+          this.$Loading.finish();
+          if (res.status_code === 0) {
+            this.$Message.success({background: true, content: res.msg})
+          } else {
+            this.$Message.error({background: true, content: res.msg})
+          }
+
+        }).catch(err => {
+          this.$Loading.error();
+          this.$Message.error({background: true, content: '电波无法到达'});
+
+        });
       },
     },
     mounted() {
       this.init_flag = true;
-      this.check_login();
 
+      this.$Loading.start();
+      getUserInfo().then(res => {
+        this.$Loading.finish();
+        this.is_login = res.data.is_login;
+        if (this.is_login === false) {
+          this.$router.push('/');
+        }
+        this.user_data = res.data;
+
+      }).catch(err => {
+        this.$Loading.error();
+        this.$Message.error({background: true, content: '电波无法到达'});
+
+      });
     },
   }
 </script>

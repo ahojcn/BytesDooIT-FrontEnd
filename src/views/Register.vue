@@ -12,27 +12,27 @@
           <Row :gutter="16">
             <Col span="12">
               <FormItem prop="email">
-                <Input type="text" v-model="reg_form.email" placeholder="邮箱">
+                <Input size="large" type="text" v-model="reg_form.email" placeholder="邮箱">
                   <Icon type="ios-mail-outline" slot="prepend"></Icon>
                 </Input>
               </FormItem>
               <FormItem prop="username">
-                <Input type="text" v-model="reg_form.username" placeholder="用户名">
+                <Input size="large" type="text" v-model="reg_form.username" placeholder="用户名">
                   <Icon type="ios-person-outline" slot="prepend"></Icon>
                 </Input>
               </FormItem>
               <FormItem prop="password">
-                <Input type="password" v-model="reg_form.password" placeholder="密码">
+                <Input size="large" type="password" v-model="reg_form.password" placeholder="密码">
                   <Icon type="ios-lock-outline" slot="prepend"></Icon>
                 </Input>
               </FormItem>
               <FormItem prop="c_password">
-                <Input type="password" v-model="reg_form.c_password" placeholder="确认密码">
+                <Input size="large" type="password" v-model="reg_form.c_password" placeholder="确认密码">
                   <Icon type="ios-lock-outline" slot="prepend"></Icon>
                 </Input>
               </FormItem>
               <FormItem prop="verify_code">
-                <Row :gutter="16">
+                <Row :gutter="2">
                   <Col span="12">
                     <Input v-model="reg_form.verify_code" placeholder="验证码">
                       <Icon type="md-finger-print" slot="prepend"/>
@@ -43,20 +43,25 @@
                   </Col>
                 </Row>
               </FormItem>
+              <Formitem>
+                <Radio v-model="reg_form.is_agree">我已阅读并同意用户协议</Radio>
+              </Formitem>
             </Col>
             <Col span="12">
-              <Radio v-model="reg_form.is_agree">我已阅读并同意用户协议。</Radio>
-              <FormItem>
-                <Button size="large" long type="primary" @click="handleRegister()">
-                  <Icon type="md-checkmark"></Icon>
-                  注册
-                </Button>
-              </FormItem>
-
               <Steps :current="0" direction="vertical">
                 <Step title="注册"></Step>
                 <Step title="验证邮箱"></Step>
               </Steps>
+
+              <FormItem>
+                <Button size="large" long type="primary" @click="handleRegister()">
+                  注册
+                </Button>
+                <Button size="large" long type="text" to="/Register" target="_blank">
+                  已有账号？去登录
+                  <Icon type="ios-arrow-forward"></Icon>
+                </Button>
+              </FormItem>
             </Col>
           </Row>
 
@@ -68,7 +73,9 @@
 </template>
 
 <script>
-  import Logo from '@/components/Logo'
+  import {register} from '@/api/user';
+  import {verify_code_img} from '@/api/util';
+  import Logo from '@/components/Logo';
 
   export default {
     name: "Register",
@@ -148,12 +155,14 @@
        */
       handleRegister() {
         if (this.reg_form.is_agree === false) {
-          this.$Message.error('请先阅读并同意用户协议');
+          this.$Message.error({background: true, content: '请先阅读并同意用户协议'});
           return;
         }
+
         this.$refs.reg_form.validate((valid) => {
           if (valid) {
-            this.$axios.post('api/user/', {
+            this.$Loading.start();
+            register({
               username: this.reg_form.username,
               email: this.reg_form.email,
               pwd: this.reg_form.password,
@@ -161,18 +170,22 @@
               verify_code: this.reg_form.verify_code,
               is_agree: this.reg_form.is_agree
             }).then(res => {
-              console.log(res);
-              if (res.data.status_code === 0) {
-                this.$Message.success(res.data.msg);
+              this.$Loading.finish();
+              if (res.status_code === 0) {
+                this.$Message.success({background: true, content: res.msg});
                 this.$router.push('/');
               } else {
-                this.$Message.error(res.data.msg);
+                this.$Message.error(res.msg);
               }
+
             }).catch(err => {
-              this.$Message.error('电波无法到达');
-            })
+              this.$Loading.error();
+              this.$Message.error({background: true, content: '电波无法到达'});
+
+            });
+
           } else {
-            this.$Message.error('请完善信息');
+            this.$Message.error({background: true, content: '请完善信息'});
           }
         })
       },
@@ -181,15 +194,15 @@
        */
       getVerifyCodeImg() {
         this.$Loading.start();
-        this.$axios.get('api/util/verify_code_img/', {responseType: 'blob'})
-          .then(res => {
-            this.$Loading.finish();
-            this.$refs.verify_code_img.src = window.URL.createObjectURL(res.data);
-          })
-          .catch(err => {
-            this.$Loading.error();
-            console.log(err)
-          });
+        verify_code_img().then(res => {
+          this.$Loading.finish();
+          this.$refs.verify_code_img.src = window.URL.createObjectURL(res);
+
+        }).catch(err => {
+          this.$Loading.error();
+          this.$Message.error({background: true, content: '电波无法到达'});
+
+        });
       },
     },
     created() {

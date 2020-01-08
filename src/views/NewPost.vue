@@ -116,6 +116,8 @@
 </template>
 
 <script>
+  import {getUserInfo} from '@/api/user';
+
   export default {
     name: "NewPost",
     data() {
@@ -371,44 +373,39 @@
 
         this.loading = false;
       },
-      /**
-       * 检查是否已登录
-       */
-      check_login() {
-        this.$Loading.start();
-        this.$axios.get('api/user/session/')
-          .then(res => {
-            this.$Loading.finish();
-            this.is_login = res.data.data.is_login;
-            if (this.is_login === true) {
-              this.user_data = res.data.data;
-              if (this.user_data.is_active === false) {
-                this.$Message.error({background: true, content: '请查收邮件并激活账号'})
-              }
-            }
-
-            this.getUserPostCategory();
-          })
-          .catch(err => {
-            // console.log(err);
-            this.$Loading.error();
-            this.$Message['error']({
-              background: true,
-              content: '电波无法到达'
-            });
-          });
-      },
     },
 
     created() {
-      this.check_login();
+
+      this.$Loading.start();
+      getUserInfo().then(res => {
+        this.$Loading.finish();
+        this.is_login = res.data.is_login;
+        if (this.is_login === true) {
+          this.user_data = res.data;
+          if (this.user_data.is_active === false) {
+            this.$Message.error({background: true, content: '请查收邮件并激活账号'})
+          }
+          this.getUserPostCategory();
+        } else {
+          this.$router.push({path: '/'});
+        }
+
+      }).catch(err => {
+        this.$Loading.error();
+        this.$Message.error({
+          background: true,
+          content: '电波无法到达'
+        });
+
+      });
 
       // 判断有无 post_id
       let post_id = this.$route.query.post_id;
       if (post_id !== undefined) {
         // 获取此文相关内容
         this.$Loading.start();
-        this.$axios.get('api/post/', {
+        this.$axios.get('api/post/draft/', {
           params: {post_id: post_id, is_edit: true}
         }).then(res => {
           this.$Loading.finish();
@@ -420,12 +417,6 @@
             let post = res.data.data.posts[0];
             this.title = post.title;
             this.content = post.content;
-            for (let i = 0; i < post.tags.length; i++) {
-              this.tags.push(post.tags[i].name);
-            }
-            for (let i = 0; i < post.category.length; i++) {
-              this.category.push(post.category[i].name);
-            }
           }
 
         }).catch(err => {
