@@ -117,6 +117,7 @@
 
 <script>
   import {getUserInfo} from '@/api/user';
+  import {uploadImg, selfPost, newPost, getPostCategory} from '@/api/post';
 
   export default {
     name: "NewPost",
@@ -147,47 +148,35 @@
       }
     },
     methods: {
-      /**
-       * 上传图片
-       */
+      // 上传图片
       uploadPostImage(pos, file) {
         this.$Loading.start();
-        this.$Message.info({
-          background: true,
-          content: '上传 img 中...'
-        });
+        this.$Message.info({background: true, content: '上传 img 中...'});
         let formdata = new FormData();
         formdata.append('img', file);
         this.img_files[pos] = file;
-        this.$axios.post('api/post/img/', formdata).then(res => {
-          if (res.data.status_code === 0) {
+        uploadImg(formdata).then(res => {
+          this.$Loading.finish();
+          if (res.status_code === 0) {
             // 将返回的url替换到文本原位置![...](0) -> ![...](url)
-            this.$refs.md.$img2Url(pos, res.data.data.img_url);
-            this.$Loading.finish();
-            this.$Message.success({
-              background: true,
-              content: res.data.msg
-            });
+            this.$refs.md.$img2Url(pos, res.data.img_url);
+            this.$Message.success({background: true, content: res.msg});
           } else {
             this.$Message.error({background: true, content: res.data.msg});
             this.delPostImage(pos);  // 删除添加的图片
           }
         });
       },
-      /**
-       * 删除图片
-       */
+      // 删除图片
       delPostImage(pos) {
         delete this.img_files[pos];
       },
-      /**
-       * ctrl + s 保存时候触发
+      /* ctrl + s 保存时候触发
        * 点击保存草稿触发
-       * 网页定时器保存触发
-       */
+       * 网页定时器保存触发 */
       handleSave(value, html) {
         this.$Loading.start();
-        this.$axios.post('api/post/', {
+        newPost({
           title: this.title,
           content: this.content,
           tags: this.tags,
@@ -196,24 +185,19 @@
           post_id: this.post_id
         }).then(res => {
           this.$Loading.finish();
-          if (res.data.status_code === 0) {
-            this.post_id = res.data.data.post_id;
-            this.$Message.success({background: true, content: res.data.msg});
+          if (res.status_code === 0) {
+            this.post_id = res.data.post_id;
+            this.$Message.success({background: true, content: res.msg});
           } else {
-            this.$Loading.error();
-            this.$Message.error({background: true, content: res.data.msg});
+            this.$Message.error({background: true, content: res.msg});
           }
         });
       },
-      /**
-       * 发布成功后跳转到首页，并带上 post id
-       */
+      // 发布成功后跳转到首页，并带上 post id
       jumpToIndexWithPostId() {
         this.$router.push(`/Post?post_id=${this.success_modal_show_data.post_id}`)
       },
-      /**
-       * 添加分类
-       */
+      // 添加分类
       handleAddCategory() {
         let max_len = 3;
         if (this.category.length >= max_len) {
@@ -245,9 +229,7 @@
           },
         });
       },
-      /**
-       * 之前的分类选中 / 取消选中的时候
-       */
+      // 之前的分类选中 / 取消选中的时候
       handleCategoryCheckChange(item) {
         let max_len = 3;
         if (this.category.length > max_len) {
@@ -255,15 +237,11 @@
           this.category.pop();
         }
       },
-      /**
-       * 删除分类
-       */
+      // 删除分类
       handleCloseCategory(event, name) {
         this.category.pop();
       },
-      /**
-       * 添加标签
-       */
+      // 添加标签
       handleAddTag() {
         let max_len = 5;
         if (this.tags.length >= max_len) {
@@ -292,25 +270,19 @@
           },
         });
       },
-      /**
-       * 删除标签
-       */
+      // 删除标签
       handleCloseTag(event, name) {
         this.tags.pop();
       },
-      /**
-       * 对话框 ok 点击事件
-       */
+      // 对话框 ok 点击事件
       handleModalClickOk() {
         this.handleSubmit();
       },
-      /**
-       * 发布文章, is_draft = false
-       */
+      // 发布文章, is_draft = false
       handleSubmit() {
         this.loading = true;
         this.$Loading.start();
-        this.$axios.post('api/post/', {
+        newPost({
           title: this.title,
           content: this.content,
           is_draft: false,
@@ -319,37 +291,30 @@
         }).then(res => {
           this.loading = false;
           this.$Loading.finish();
-          if (res.data.status_code === -1) {
-            this.$Message.error({background: true, content: res.data.msg});
+          if (res.status_code === -1) {
+            this.$Message.error({background: true, content: res.msg});
             this.show_modal = !this.show_modal;
           } else {
-            this.$Message.success({background: true, content: res.data.msg});
-            this.success_modal_show_data = res.data.data;
+            this.$Message.success({background: true, content: res.msg});
+            this.success_modal_show_data = res.data;
             this.show_modal = !this.show_modal;
             this.show_success_modal = !this.show_success_modal;
           }
         });
-
       },
-      /**
-       * 获取用户的 post 分类列表
-       */
+      // 获取用户的 post 分类列表
       getUserPostCategory() {
         this.loading = true;
-        this.$axios.get('api/post/category/', {
-          params: {user_id: this.user_data.user_id}
-        }).then(res => {
-          this.prev_category = res.data.data;
+        this.$Loading.start();
+        getPostCategory({user_id: this.user_data.user_id}).then(res => {
+          this.prev_category = res.data;
           this.$Loading.finish();
-
         });
-
         this.loading = false;
       },
     },
 
     created() {
-
       this.$Loading.start();
       getUserInfo().then(res => {
         this.$Loading.finish();
@@ -370,16 +335,13 @@
       if (post_id !== undefined) {
         // 获取此文相关内容
         this.$Loading.start();
-        this.$axios.get('api/post/draft/', {
-          params: {post_id: post_id, is_edit: true}
-        }).then(res => {
+        selfPost({post_id: post_id, is_edit: true}).then(res => {
           this.$Loading.finish();
-
-          if (res.data.data.posts.length === 0) {
+          if (res.data.posts.length === 0) {
             this.$Message.error({background: true, content: '无相关文章'});
             this.$router.go(-1);
           } else {
-            let post = res.data.data.posts[0];
+            let post = res.data.posts[0];
             this.title = post.title;
             this.content = post.content;
           }

@@ -211,6 +211,7 @@
 
 <script>
   import {getUserInfo} from '@/api/user';
+  import {giveFood, giveLike, getAllPost} from '@/api/post';
 
   export default {
     name: "Post",
@@ -248,19 +249,17 @@
       giveLaTiao(post_id) {
         this.$Loading.start();
 
-        this.$axios.post('/api/post/food/', {
+        giveFood({
           post_id: post_id
         }).then(res => {
           this.$Loading.finish();
 
-          if (res.data.status_code === -1) {
-            this.$Message.error({background: true, content: res.data.msg});
-          } else if (res.data.status_code === 0) {
-            this.$Message.success({background: true, content: '投喂成功'})
+          if (res.status_code === -1) {
+            this.$Message.error({background: true, content: res.msg});
+          } else if (res.status_code === 0) {
+            this.$Message.success({background: true, content: '投喂成功'});
             // 更新文章信息
             this.getPosts();
-            // 更新用户信息
-            this.check_login();
           }
         });
       },
@@ -270,14 +269,14 @@
       likePost(post_id) {
         this.$Loading.start();
 
-        this.$axios.post('/api/post/like/', {
+        giveLike({
           post_id: post_id
         }).then(res => {
           this.$Loading.finish();
 
-          if (res.data.status_code === -1) {
-            this.$Message.error({background: true, content: res.data.msg});
-          } else if (res.data.status_code === 0) {
+          if (res.status_code === -1) {
+            this.$Message.error({background: true, content: res.msg});
+          } else if (res.status_code === 0) {
             this.$Message.success({background: true, content: '点赞成功'});
             // 更新文章信息
             this.getPosts();
@@ -359,17 +358,14 @@
        */
       getOnePost(post_id) {
         this.$Loading.start();
-        this.$axios.get('api/post/', {
-          params: {post_id: post_id}
-        }).then(res => {
+        getAllPost({post_id: post_id}).then(res => {
           this.$Loading.finish();
-          if (res.data.data.posts.length === 0) {
+          if (res.data.posts.length === 0) {
             this.$Message.error({background: true, content: '无相关文章'});
             this.show_one_post = false;
           } else {
-            this.one_post = res.data.data.posts[0];
+            this.one_post = res.data.posts[0];
           }
-
         });
       },
     },

@@ -54,7 +54,7 @@
 
 <script>
   import {getUserInfo} from '@/api/user';
-  import {delPost, selfAllPost} from '@/api/post';
+  import {delPost, selfPost} from '@/api/post';
 
   export default {
     name: "HomePost",
@@ -109,7 +109,7 @@
        */
       getAllPost() {
         this.$Loading.start();
-        selfAllPost({page_index: this.page_index, page_size: this.page_size}).then(res => {
+        selfPost({page_index: this.page_index, page_size: this.page_size}).then(res => {
           this.$Loading.finish();
           if (res.status_code === 0) {
             this.posts = res.data.posts;

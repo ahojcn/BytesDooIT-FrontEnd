@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {Notice, Message} from 'view-design';
+import {Notice, LoadingBar} from 'view-design';
 
 // 一个 axios 实例
 const service = axios.create({
@@ -24,6 +24,8 @@ service.interceptors.response.use(
       desc: '小蜜蜂飞到了电波到不了的地方',
       duration: 3
     });
+
+    LoadingBar.error();
 
     return err.data;
   }
