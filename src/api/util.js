@@ -8,3 +8,11 @@ export function verify_code_img() {
     responseType: 'blob'
   })
 }
+
+// 获取 csrf token
+export function csrfToken() {
+  return request({
+    url: 'api/util/csrf_token/',
+    method: 'post'
+  })
+}

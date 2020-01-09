@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-// todo 接口整合
+// todo fix post api
 // 删除文章
 export function delPost(data) {
   return request({

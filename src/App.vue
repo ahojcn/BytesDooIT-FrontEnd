@@ -5,18 +5,15 @@
 </template>
 
 <script>
+  import {csrfToken} from '@/api/util';
+
   export default {
     name: 'App',
     data() {
       return {}
     },
     mounted() {
-      this.$axios.post('api/util/csrf_token/')
-        .then(res => {
-        })
-        .catch(err => {
-          this.$Message.error('未知错误');
-        });
+      csrfToken();
 
       this.$Notice.config({
         top: 100,
@@ -25,7 +22,7 @@
 
       this.$Message.config({
         top: 100,
-        duration: 5,
+        duration: 3,
       });
     },
     created() {
