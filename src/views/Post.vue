@@ -315,19 +315,17 @@
       // 分页获取 post
       getPosts() {
         this.$Loading.start();
-        this.$axios.get('api/post/', {
-          params: {
-            page_index: this.page_index,
-            page_size: this.page_size,
-          }
+        getAllPost({
+          page_index: this.page_index,
+          page_size: this.page_size,
         }).then(res => {
           this.$Loading.finish();
-          if (res.data.status_code === 0) {
-            this.posts = res.data.data.posts;
-            this.page_index = res.data.data.page_index;
-            this.page_size = res.data.data.page_size;
-            this.total_page = res.data.data.total_page;
-            this.total_post = res.data.data.total_post;
+          if (res.status_code === 0) {
+            this.posts = res.data.posts;
+            this.page_index = res.data.page_index;
+            this.page_size = res.data.page_size;
+            this.total_page = res.data.total_page;
+            this.total_post = res.data.total_post;
           }
           this.cur_post = this.posts[this.select_index];
 

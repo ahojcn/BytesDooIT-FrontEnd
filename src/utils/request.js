@@ -3,7 +3,7 @@ import {Notice, LoadingBar} from 'view-design';
 
 // 一个 axios 实例
 const service = axios.create({
-  baseURL: 'http://127.0.0.1:8000/',
+  baseURL: 'http://127.0.0.1:7788/',
   withCredentials: true,  // send cookies when cross-domain requests
   xsrfCookieName: 'csrftoken',
   xsrfHeaderName: 'X-CSRFToken',
