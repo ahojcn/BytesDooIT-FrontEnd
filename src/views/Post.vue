@@ -11,16 +11,14 @@
             v-model="show_one_post">
       <Card shadow>
         <div slot="title">
-          <div>
-            <div style="text-align: center;">
-              <div style="display: inline;">
-                <Avatar class="user-avatar" ref="avatar" size="large">
-                  {{one_post.user_data.username}}
-                </Avatar>
-                <span style="color: #fb7299; font-weight: 700">
+          <div style="text-align: center;">
+            <div style="display: inline;">
+              <Avatar class="user-avatar" ref="avatar" size="large">
+                {{one_post.user_data.username}}
+              </Avatar>
+              <span style="color: #fb7299; font-weight: 700">
                     {{one_post.user_data.username}}
                 </span>
-              </div>
             </div>
           </div>
         </div>
@@ -193,6 +191,7 @@
               :subfield="false"
               :defaultOpen="'preview'"
               :toolbarsFlag="false"
+              :boxShadowStyle="'0 0px 0px 0 rgba(0, 0, 0, 0)'"
               :editable="false"
               :scrollStyle="true"
               :ishljs="true"
@@ -203,9 +202,30 @@
             <Divider orientation="left">EOF</Divider>
           </div>
         </Card>
+
+        <div style="padding-top: 20px">
+          <Card>
+            <div slot="title">
+              <div style="text-align: center;">
+                <Icon type="md-code" size="30"></Icon>
+              </div>
+            </div>
+
+            <div>
+              <mavon-editor
+                v-model="comment_content"
+                ref="md"
+                style="min-height: 200px; flex-direction: column;"
+                :editable="true"
+                :toolbarsFlag="false"
+                placeholder="在这里写下见解 || 疑问，支持 Markdown 语法 ~"
+              >
+              </mavon-editor>
+            </div>
+          </Card>
+        </div>
       </Col>
     </Row>
-
   </div>
 </template>
 
@@ -240,6 +260,8 @@
         one_post: {
           user_data: {},
         },  // 单个 post 内容
+
+        comment_content: '',  // 评论内容
       }
     },
     methods: {
