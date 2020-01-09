@@ -18,6 +18,11 @@
           this.$Message.error('未知错误');
         });
 
+      this.$Notice.config({
+        top: 100,
+        duration: 3
+      });
+
       this.$Message.config({
         top: 100,
         duration: 5,

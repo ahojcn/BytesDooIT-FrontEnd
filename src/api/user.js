@@ -17,6 +17,14 @@ export function login(data) {
   })
 }
 
+// 退出登录
+export function logout() {
+  return request({
+    url: 'api/user/session/',
+    method: 'delete',
+  })
+}
+
 // 注册
 export function register(data) {
   return request({

@@ -262,10 +262,7 @@
             // 更新用户信息
             this.check_login();
           }
-        }).catch(err => {
-          this.$Loading.error();
-          this.$Message.error({background: true, content: '小蜜蜂飞不到那哟'});
-        })
+        });
       },
       /**
        * 给文章点赞
@@ -285,10 +282,7 @@
             // 更新文章信息
             this.getPosts();
           }
-        }).catch(err => {
-          this.$Loading.error();
-          this.$Message.error({background: true, content: '小蜜蜂飞不到那哟'});
-        })
+        });
       },
       /**
        * 跳转到首页
@@ -351,8 +345,6 @@
           this.cur_post = this.posts[this.select_index];
 
           this.loading = false;
-        }).catch(err => {
-          this.$Message.error({background: true, content: '小蜜蜂飞不过去'});
         });
       },
       /**
@@ -378,10 +370,7 @@
             this.one_post = res.data.data.posts[0];
           }
 
-        }).catch(err => {
-          this.$Loading.error();
-          this.$Message.error({background: true, content: '小蜜蜂飞不过去'});
-        })
+        });
       },
     },
 
@@ -396,10 +385,6 @@
             this.$Message.error({background: true, content: '请查收邮件并激活账号'})
           }
         }
-
-      }).catch(err => {
-        this.$Loading.error();
-        this.$Message.error({background: true, content: '电波无法到达'});
 
       });
 

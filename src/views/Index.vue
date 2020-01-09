@@ -89,7 +89,7 @@
 </template>
 
 <script>
-  import {getUserInfo} from '@/api/user';
+  import {getUserInfo, logout} from '@/api/user';
   import Logo from '@/components/Logo';
 
   export default {
@@ -112,10 +112,7 @@
        * 点击返回顶部按钮
        */
       handleBack2Top() {
-        this.$Message.success({
-          background: true,
-          content: '欢迎回来~'
-        })
+        this.$Message.success({background: true, content: '欢迎回来~'});
       },
       /**
        * 处理头像下拉菜单选择
@@ -142,19 +139,11 @@
        */
       handleLogOut() {
         this.$Loading.start();
-        console.log(1);
-        this.$axios.delete('api/user/session/')
-          .then(res => {
-            this.$Loading.finish();
-            this.$router.go(0);
-          })
-          .catch(err => {
-            this.$Loading.error();
-            this.$Message['error']({
-              background: true,
-              content: '电波无法到达'
-            });
-          });
+        logout().then(res => {
+          this.$Loading.finish();
+          this.$router.go(0);
+        });
+
       },
     },
 
@@ -169,12 +158,8 @@
             this.$Message.error({background: true, content: '请查收邮件并激活账号'})
           }
         }
-
-      }).catch(err => {
-        this.$Loading.error();
-        this.$Message.error({background: true, content: '电波无法到达'});
-
       });
+
     },
   }
 </script>

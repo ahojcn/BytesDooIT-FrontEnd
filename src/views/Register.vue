@@ -177,17 +177,11 @@
               } else {
                 this.$Message.error(res.msg);
               }
-
-            }).catch(err => {
-              this.$Loading.error();
-              this.$Message.error({background: true, content: '电波无法到达'});
-
             });
-
           } else {
             this.$Message.error({background: true, content: '请完善信息'});
           }
-        })
+        });
       },
       /**
        * 获取图片验证码
@@ -197,11 +191,6 @@
         verify_code_img().then(res => {
           this.$Loading.finish();
           this.$refs.verify_code_img.src = window.URL.createObjectURL(res);
-
-        }).catch(err => {
-          this.$Loading.error();
-          this.$Message.error({background: true, content: '电波无法到达'});
-
         });
       },
     },

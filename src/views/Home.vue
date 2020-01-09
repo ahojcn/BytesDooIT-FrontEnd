@@ -107,12 +107,8 @@
           } else {
             this.$Message.error({background: true, content: res.msg})
           }
-
-        }).catch(err => {
-          this.$Loading.error();
-          this.$Message.error({background: true, content: '电波无法到达'});
-
         });
+
       },
     },
     mounted() {
@@ -124,12 +120,8 @@
           this.$router.push('/');
         }
         this.user_data = res.data;
-
-      }).catch(err => {
-        this.$Loading.error();
-        this.$Message.error({background: true, content: '电波无法到达'});
-
       });
+
     },
   }
 </script>

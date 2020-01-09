@@ -1,4 +1,5 @@
-import axios from 'axios'
+import axios from 'axios';
+import {Notice, Message} from 'view-design';
 
 // 一个 axios 实例
 const service = axios.create({
@@ -18,6 +19,12 @@ service.interceptors.response.use(
     return res.data;
   },
   err => {
+    Notice.error({
+      title: '网络错误',
+      desc: '小蜜蜂飞到了电波到不了的地方',
+      duration: 3
+    });
+
     return err.data;
   }
 );

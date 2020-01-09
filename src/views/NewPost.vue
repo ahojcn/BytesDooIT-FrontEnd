@@ -159,28 +159,20 @@
         let formdata = new FormData();
         formdata.append('img', file);
         this.img_files[pos] = file;
-        this.$axios.post('api/post/img/', formdata)
-          .then(res => {
-            if (res.data.status_code === 0) {
-              // 将返回的url替换到文本原位置![...](0) -> ![...](url)
-              this.$refs.md.$img2Url(pos, res.data.data.img_url);
-              this.$Loading.finish();
-              this.$Message.success({
-                background: true,
-                content: res.data.msg
-              });
-            } else {
-              this.$Message.error({background: true, content: res.data.msg});
-              this.delPostImage(pos);  // 删除添加的图片
-            }
-          })
-          .catch(err => {
-            this.$Loading.error();
-            this.$Message['error']({
+        this.$axios.post('api/post/img/', formdata).then(res => {
+          if (res.data.status_code === 0) {
+            // 将返回的url替换到文本原位置![...](0) -> ![...](url)
+            this.$refs.md.$img2Url(pos, res.data.data.img_url);
+            this.$Loading.finish();
+            this.$Message.success({
               background: true,
-              content: '电波无法到达'
+              content: res.data.msg
             });
-          });
+          } else {
+            this.$Message.error({background: true, content: res.data.msg});
+            this.delPostImage(pos);  // 删除添加的图片
+          }
+        });
       },
       /**
        * 删除图片
@@ -211,12 +203,6 @@
             this.$Loading.error();
             this.$Message.error({background: true, content: res.data.msg});
           }
-        }).catch(err => {
-          this.$Loading.error();
-          this.$Message['error']({
-            background: true,
-            content: '电波无法到达'
-          });
         });
       },
       /**
@@ -342,15 +328,8 @@
             this.show_modal = !this.show_modal;
             this.show_success_modal = !this.show_success_modal;
           }
-
-        }).catch(err => {
-          this.loading = false;
-          this.$Loading.error();
-          this.$Message['error']({
-            background: true,
-            content: '电波无法到达'
-          });
         });
+
       },
       /**
        * 获取用户的 post 分类列表
@@ -363,12 +342,6 @@
           this.prev_category = res.data.data;
           this.$Loading.finish();
 
-        }).catch(err => {
-          this.$Loading.error();
-          this.$Message['error']({
-            background: true,
-            content: '电波无法到达'
-          });
         });
 
         this.loading = false;
@@ -390,14 +363,6 @@
         } else {
           this.$router.push({path: '/'});
         }
-
-      }).catch(err => {
-        this.$Loading.error();
-        this.$Message.error({
-          background: true,
-          content: '电波无法到达'
-        });
-
       });
 
       // 判断有无 post_id
@@ -418,11 +383,8 @@
             this.title = post.title;
             this.content = post.content;
           }
+        });
 
-        }).catch(err => {
-          this.$Loading.error();
-          this.$Message.error({background: true, content: '小蜜蜂飞不过去'});
-        })
       }
     },
   }
