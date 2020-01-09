@@ -1,3 +1,7 @@
+/**
+ * util相关接口
+ */
+
 import request from '@/utils/request';
 
 // 图片验证码

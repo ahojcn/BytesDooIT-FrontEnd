@@ -1,3 +1,7 @@
+/**
+ * 文章相关接口
+ */
+
 import request from '@/utils/request';
 
 // 删除文章

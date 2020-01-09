@@ -243,9 +243,7 @@
       }
     },
     methods: {
-      /**
-       * 投喂辣条
-       */
+      // 投喂辣条
       giveLaTiao(post_id) {
         this.$Loading.start();
 
@@ -263,9 +261,7 @@
           }
         });
       },
-      /**
-       * 给文章点赞
-       */
+      // 给文章点赞
       likePost(post_id) {
         this.$Loading.start();
 
@@ -283,16 +279,12 @@
           }
         });
       },
-      /**
-       * 跳转到首页
-       */
+      // 跳转到首页
       jumpToIndex() {
         this.$router.push('/Post');
         this.$router.go(0);
       },
-      /**
-       * search
-       */
+      // search
       searchPost(keywords) {
         let ret = [];
         if (keywords === '') {
@@ -307,7 +299,7 @@
         }
         return ret;
       },
-      /**
+      /*
        * on-page-size-change
        * 当 page size 改变
        */
@@ -315,16 +307,12 @@
         this.page_size = new_page_size;
         this.getPosts();
       },
-      /**
-       * 当页码发生改变
-       */
+      // 当页码发生改变
       handlePageIndexChange(i) {
         this.page_index = i;
         this.getPosts();
       },
-      /**
-       * 分页获取 post
-       */
+      // 分页获取 post
       getPosts() {
         this.$Loading.start();
         this.$axios.get('api/post/', {
@@ -346,16 +334,12 @@
           this.loading = false;
         });
       },
-      /**
-       * 切换点击事件
-       */
+      // 切换点击事件
       handleOnClickCell(i) {
         this.cur_post = this.posts[i];
         this.select_index = i;
       },
-      /**
-       * 获取单个 post
-       */
+      // 获取单个 post
       getOnePost(post_id) {
         this.$Loading.start();
         getAllPost({post_id: post_id}).then(res => {
