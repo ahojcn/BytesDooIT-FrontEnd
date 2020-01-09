@@ -1,12 +1,13 @@
 <!--suppress ALL -->
 <template>
   <div class="layout">
-
-    <div class="layout-main animated fadeIn">
-      <Logo style="width: 500px;"></Logo>
-
-      <Card>
-        <p slot="title">登录</p>
+    <div class="layout-main animated fadeInUp">
+      <Card :style="{opacity: '0.9'}">
+        <div slot="title" class="layout-logo">
+          <a>
+            <span>登录 - BytesDooIT</span>
+          </a>
+        </div>
 
         <Form ref="login_form" :model="login_form" :rules="rule_login">
 
@@ -41,7 +42,7 @@
                   登录
                 </Button>
 
-                <Button size="large" long type="text" to="/Register" target="_blank">
+                <Button size="large" long type="text" to="/Register">
                   没有账号？注册一个
                   <Icon type="ios-arrow-forward"></Icon>
                 </Button>
@@ -179,9 +180,17 @@
     height: 100%;
     position: absolute;
 
-    background: #74ebd5; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to bottom, #ACB6E5, #74ebd5); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to bottom, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-image: url('../assets/homebk2.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .layout-logo {
+    width: 500px;
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
   }
 
   .layout-main {

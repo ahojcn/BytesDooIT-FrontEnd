@@ -13,7 +13,6 @@
       <Menu theme="primary" class="layout-nav-menu" mode="horizontal" active-name="post" @on-select="handleDropDown">
         <div class="layout-logo">
           <a>
-            <!--            <img class="layout-logo" src="../assets/logo.png" @click="handleLogoClick"/>-->
             <span style="color: orange" @click="handleLogoClick">BytesDooIT</span>
           </a>
         </div>

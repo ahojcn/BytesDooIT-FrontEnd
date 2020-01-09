@@ -1,12 +1,13 @@
 <!--suppress ALL -->
 <template>
   <div class="layout">
-
-    <div class="layout-main animated fadeIn">
-      <Logo style="width: 500px;"></Logo>
-
-      <Card>
-        <p slot="title">注册</p>
+    <div class="layout-main animated fadeInDown">
+      <Card :style="{opacity: '0.9'}">
+        <div slot="title" class="layout-logo">
+          <a>
+            <span>注册 - BytesDooIT</span>
+          </a>
+        </div>
 
         <Form ref="reg_form" :model="reg_form" :rules="rule_reg">
 
@@ -58,7 +59,7 @@
                 <Button size="large" long type="primary" @click="handleRegister()">
                   注册
                 </Button>
-                <Button size="large" long type="text" to="/Register" target="_blank">
+                <Button size="large" long type="text" to="/Login">
                   已有账号？去登录
                   <Icon type="ios-arrow-forward"></Icon>
                 </Button>
@@ -211,15 +212,22 @@
     height: 100%;
     position: absolute;
 
-    background: #74ebd5; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to bottom, #ACB6E5, #74ebd5); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to bottom, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-image: url('../assets/homebk2.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .layout-logo {
+    text-align: center;
+    width: 500px;
+    font-size: 30px;
+    font-weight: 700
   }
 
   .layout-main {
     margin: 0 auto;
     width: 500px;
     margin-top: 100px;
-    /*opacity: 90%;*/
   }
 </style>
