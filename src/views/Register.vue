@@ -45,9 +45,9 @@
                   </Col>
                 </Row>
               </FormItem>
-              <Formitem>
+              <FormItem>
                 <Radio v-model="reg_form.is_agree">我已阅读并同意用户协议</Radio>
-              </Formitem>
+              </FormItem>
             </Col>
             <Col span="12">
               <Steps :current="0" direction="vertical">
