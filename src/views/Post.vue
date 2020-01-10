@@ -13,12 +13,10 @@
         <div slot="title">
           <div style="text-align: center;">
             <div style="display: inline;">
-              <Avatar class="user-avatar" ref="avatar" size="large">
-                {{one_post.user_data.username}}
-              </Avatar>
+              <Avatar :src="one_post.user_data.avatar" class="user-avatar" ref="avatar" size="large"></Avatar>
               <span style="color: #fb7299; font-weight: 700">
                     {{one_post.user_data.username}}
-                </span>
+              </span>
             </div>
           </div>
         </div>
@@ -48,6 +46,8 @@
           <mavon-editor
             class="md"
             style="min-height: 500px; z-index: 90"
+            :boxShadowStyle="'0 0px 0px 0 rgba(0, 0, 0, 0)'"
+            :previewBackground="'#fff'"
             :value="one_post.content"
             :subfield="false"
             :defaultOpen="'preview'"
@@ -112,9 +112,7 @@
           <div slot="title">
             <div style="text-align: center;">
               <div style="display: inline;">
-                <Avatar class="user-avatar" ref="avatar" size="large">
-                  {{cur_post.user_data.username}}
-                </Avatar>
+                <Avatar :src="cur_post.user_data.avatar" class="user-avatar" ref="avatar" size="large"></Avatar>
                 <span style="color: #fb7299; font-weight: 700">
                     {{cur_post.user_data.username}}
                   </span>
@@ -186,12 +184,13 @@
 
             <mavon-editor
               class="md"
-              style="min-height: 500px; z-index: 90"
+              style="min-height: 100px; z-index: 90"
               :value="cur_post.content"
               :subfield="false"
               :defaultOpen="'preview'"
               :toolbarsFlag="false"
               :boxShadowStyle="'0 0px 0px 0 rgba(0, 0, 0, 0)'"
+              :previewBackground="'#fff'"
               :editable="false"
               :scrollStyle="true"
               :ishljs="true"
@@ -207,20 +206,82 @@
           <Card>
             <div slot="title">
               <div style="text-align: center;">
-                <Icon type="md-code" size="30"></Icon>
+                <Icon type="ios-arrow-back" size="30"></Icon>
+                <span style="font-size: 25px">评论</span>
+                <Icon type="ios-arrow-forward" size="30"></Icon>
               </div>
             </div>
 
             <div>
-              <mavon-editor
-                v-model="comment_content"
-                ref="md"
-                style="min-height: 200px; flex-direction: column;"
-                :editable="true"
-                :toolbarsFlag="false"
-                placeholder="在这里写下见解 || 疑问，支持 Markdown 语法 ~"
-              >
-              </mavon-editor>
+              <List size="small">
+                <ListItem v-for="(item, index) in comments.comments" :key="index">
+                  <ListItemMeta :description="item.description">
+                    <template slot="avatar">
+                      <Avatar icon="ios-person" size="large" :src="item.avatar"></Avatar>
+                    </template>
+
+                    <template slot="title">
+                      <mavon-editor
+                        style="min-height: 100px; z-index: 90"
+                        :boxShadowStyle="'0 0px 0px 0 rgba(0, 0, 0, 0)'"
+                        :previewBackground="'#fff'"
+                        :value="item.content"
+                        :subfield="false"
+                        :defaultOpen="'preview'"
+                        :toolbarsFlag="false"
+                        :editable="false"
+                        :scrollStyle="true"
+                        :ishljs="true"
+                        :readmodel="true"
+                      ></mavon-editor>
+                    </template>
+                  </ListItemMeta>
+
+                  <template slot="action">
+                    <Button type="text" @click="handleLikeComment(item.id, true)">
+                      <Icon type="ios-thumbs-up" size="20"></Icon>
+                      {{item.like_count}}
+                    </Button>
+                    <Button type="text" @click="handleLikeComment(item.id, false)">
+                      <Icon type="md-thumbs-down" size="20"></Icon>
+                      {{item.unlike_count}}
+                    </Button>
+                  </template>
+                </ListItem>
+              </List>
+
+              <div style="text-align: center; padding-bottom: 20px; margin-top: 20px">
+                <div style="display: inline;">
+                  <Page size="small" :total="comments.total_post" :page-size="comments.page_size" show-elevator
+                        @on-change="handleCommentPageIndexChange"></Page>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        <div v-if="is_login" style="padding-top: 20px">
+          <Card>
+            <div style="text-align: center">
+              <Tag size="large" color="#FFA2D3">写了 {{comment_len}} 字，能写 {{comment_max_len}} 字</Tag>
+            </div>
+
+            <mavon-editor
+              v-model="comment_content"
+              ref="md"
+              style="min-height: 10px; flex-direction: column; margin: 10px"
+              :editable="is_login"
+              :toolbarsFlag="false"
+              :previewBackground="'#fff'"
+              :boxShadowStyle="'0 0px 0px 0 rgba(0, 0, 0, 0)'"
+              :shortCut="false"
+              placeholder="留个友善的评论意思下，支持 Markdown 语法 ~"
+              @change="handleCommentChange"
+            >
+            </mavon-editor>
+
+            <div style="text-align: center">
+              <Button type="primary" @click="handleSubmitComment">我说完了，提交吧</Button>
             </div>
           </Card>
         </div>
@@ -232,6 +293,7 @@
 <script>
   import {getUserInfo} from '@/api/user';
   import {giveFood, giveLike, getAllPost} from '@/api/post';
+  import {newComment, getComment, likeComment} from '@/api/comment';
 
   export default {
     name: "Post",
@@ -262,9 +324,88 @@
         },  // 单个 post 内容
 
         comment_content: '',  // 评论内容
+        comment_max_len: 512,  // 评论最大长度
+
+        comments: {
+          page_index: 1,
+        },  // 获取的当前文章的评论
+      }
+    },
+    watch: {
+      // 当 cur_post 发生改变的时候
+      cur_post: function () {
+        this.getComment();
+      }
+    },
+    computed: {
+      comment_len: {
+        get() {
+          return this.comment_content.length;
+        }
       }
     },
     methods: {
+      handleLikeComment(id, like) {
+        this.$Loading.start();
+        likeComment({
+          id: id,
+          like: like,
+        }).then(res => {
+          if (res.status_code === 0) {
+            this.$Loading.finish();
+            this.$Message.success(res.msg);
+          } else {
+            this.$Loading.error();
+            this.$Message.error(res.msg);
+          }
+          this.getComment();
+        });
+      },
+      // 获取 cur_post 的评论数据
+      getComment() {
+        this.$Loading.start();
+        getComment({
+          post_id: this.cur_post.post_id,
+          page_index: this.comments.page_index
+        }).then(res => {
+          this.$Loading.finish();
+          this.comments = res.data;
+        });
+      },
+      // 提交评论
+      handleSubmitComment() {
+        if (this.comment_content.length === 0) {
+          this.$Message.info('说点什么再提交吧~');
+          return
+        }
+
+        this.$Loading.start();
+        newComment({
+          post_id: this.cur_post.post_id,
+          content: this.comment_content
+        }).then(res => {
+          this.$Loading.finish();
+          if (res.status_code === 0) {
+            this.$Message.success(res.msg);
+            this.comment_content = '';
+            this.getComment();  // 更新评论信息
+          } else {
+            this.$Loading.error();
+            this.$Message.error(res.msg);
+          }
+        });
+      },
+      // 评论页码发生改变
+      handleCommentPageIndexChange(i) {
+        this.comments.page_index = i;
+        this.getComment();
+      },
+      // 评论内容改变时，检查是否超过长度，触发提示
+      handleCommentChange(value) {
+        if (value.length >= this.comment_max_len) {
+          this.$Message.warning({background: true, content: '说太多啦~删一些吧！'});
+        }
+      },
       // 投喂辣条
       giveLaTiao(post_id) {
         this.$Loading.start();
