@@ -242,15 +242,11 @@
   /*}*/
 
   .rocket-con {
-    position: fixed;
     background: url(../assets/rocket_top.png);
     width: 150px;
     height: 175px;
     cursor: pointer;
     z-index: 99;
-    bottom: 50px;
-    left: 50%;
-    margin-left: 400px
   }
 
   .fly {
