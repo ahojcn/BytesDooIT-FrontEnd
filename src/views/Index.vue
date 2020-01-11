@@ -3,9 +3,7 @@
   <div class="layout">
     <!--  返回顶部按钮  -->
     <BackTop :height="100" :bottom="100" :style="{zIndex: '99999'}" @on-click="handleBack2Top">
-      <div class="back2top">
-        <img src="../assets/back2top.png">
-      </div>
+      <div ref="rocket" class="rocket-con" @mouseout="rocketStop" @mouseover="rocketFly"></div>
     </BackTop>
 
     <Layout class="card-background">
@@ -107,15 +105,19 @@
         this.$router.go(0);
       },
 
-      /**
-       * 点击返回顶部按钮
-       */
+      // 鼠标移动到火箭上时
+      rocketFly() {
+        this.$refs.rocket.classList.add('fly');
+      },
+      // 鼠标从火箭上移开时
+      rocketStop() {
+        this.$refs.rocket.classList.remove('fly');
+      },
+      // 点击返回顶部按钮
       handleBack2Top() {
         this.$Message.success({background: true, content: '欢迎回来~'});
       },
-      /**
-       * 处理头像下拉菜单选择
-       */
+      // 处理头像下拉菜单选择
       handleDropDown(name) {
         switch (name) {
           case 'home':
@@ -133,9 +135,7 @@
             break;
         }
       },
-      /**
-       * 处理退出登录
-       */
+      // 处理退出登录
       handleLogOut() {
         this.$Loading.start();
         logout().then(res => {
@@ -157,6 +157,10 @@
             this.$Message.error({background: true, content: '请查收邮件并激活账号'})
           }
         }
+      });
+
+      this.$axios.get('api/user/test/').then(res => {
+        console.log(res)
       });
 
     },
@@ -232,9 +236,44 @@
     background-color: #fde3cf;
   }
 
-  .back2top {
-    padding: 10px;
-    border-radius: 2px;
+  /*.back2top {*/
+  /*  padding: 10px;*/
+  /*  border-radius: 2px;*/
+  /*}*/
+
+  .rocket-con {
+    position: fixed;
+    background: url(../assets/rocket_top.png);
+    width: 150px;
+    height: 175px;
+    cursor: pointer;
+    z-index: 99;
+    bottom: 50px;
+    left: 50%;
+    margin-left: 400px
+  }
+
+  .fly {
+    animation: fly .4s steps(1) infinite;
+    background-image: url(../assets/rocket_frame.png)
+  }
+
+  @keyframes fly {
+    0% {
+      background-position-x: 0
+    }
+    25% {
+      background-position-x: -150px
+    }
+    50% {
+      background-position-x: -300px
+    }
+    75% {
+      background-position-x: -450px
+    }
+    to {
+      background-position-x: -600px
+    }
   }
 
   .layout-nav-menu {

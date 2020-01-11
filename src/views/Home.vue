@@ -38,6 +38,9 @@
         最近登录：{{new Date(user_data.last_login_datetime).toLocaleDateString()}}<br>
       </div>
 
+      <Button type="primary">成为主播</Button>
+      <Button type="primary">成为UP主</Button>
+      <Button type="primary">发布招聘</Button>
     </Card>
 
     <Divider dashed size="small"></Divider>
